@@ -2,6 +2,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
 public class TOTP {
+    //TODO: check if NTP is available, use if positive, else use system time
     private byte [] key = null;
     private long timeStepInSeconds = 30;
     // Construtor da classe. Recebe a chave secreta em BASE32 e o intervalo
