@@ -1,5 +1,5 @@
 public class AutenticationControler {
-    public boolean Authenticate(String nomeUsuario, String password){
+    public static boolean Authenticate(String nomeUsuario, String password){
         boolean result = false;
 
         //verifique nome de usuário
@@ -9,7 +9,7 @@ public class AutenticationControler {
 
         return result;
     }
-    public boolean Authenticate(String fraseSecreta){
+    public static boolean Authenticate(String fraseSecreta){
         boolean result = false;
 
         //verifique a fraseSecreta do administrador
@@ -17,7 +17,7 @@ public class AutenticationControler {
 
         return result;
     }
-    public boolean AuthenticateRegister(String novoUsuario){
+    public static boolean AuthenticateRegister(String novoUsuario){
         boolean result = false;
         //verifique cada detalhe do cadastro separado no entra chaves abaixo
         {}
@@ -26,14 +26,14 @@ public class AutenticationControler {
 
         return result;
     }
-    public boolean AuthenticateTOTP(String password){
+    public static boolean AuthenticateTOTP(String password){
         boolean result = false;
         //chame a classe TOTP para verificar a password recebida
         {}
 
         return result;
     }
-    public boolean AuthenticateFileAccess(String codeName){
+    public static boolean AuthenticateFileAccess(String codeName){
         boolean result = false;
         //chame a classe TOTP para verificar a password recebida
         {}
