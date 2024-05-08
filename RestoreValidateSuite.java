@@ -66,13 +66,6 @@ public class RestoreValidateSuite {
             return false;
         }
 
-        //byte[] byteArray = new byte[(int) myFile.length()];
-        //try (FileInputStream inputStream = new FileInputStream(myFile)) {
-        //   inputStream.read(byteArray);
-        //} catch(FileNotFoundException e){
-        //    System.err.println("File not found");
-        //}
-
         byte[] semente = null;
         {
         byte[] EnvelopeArray = byteFromFile(digitalEnvelope);
@@ -230,7 +223,7 @@ public class RestoreValidateSuite {
         } catch(BadPaddingException e) {
             System.err.println("Erro no uso do padding na decriptografia do envelope");
             System.exit(1);
-        }catch(NoSuchAlgorithmException e) {
+        } catch(NoSuchAlgorithmException e) {
             System.err.println("Algorithmo na decriptografia do envelope não encontrado");
             System.exit(1);
         } catch(NoSuchPaddingException e){
