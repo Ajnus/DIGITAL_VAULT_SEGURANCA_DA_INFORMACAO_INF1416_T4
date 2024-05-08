@@ -1,0 +1,83 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 6 (0x6)
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=BR, ST=RJ, L=Rio, O=PUC, OU=INF1416, CN=AC INF1416/emailAddress=ca@grad.inf.puc-rio.br
+        Validity
+            Not Before: Apr 29 14:01:30 2022 GMT
+            Not After : Apr 28 14:01:30 2025 GMT
+        Subject: C=BR, ST=RJ, O=PUC, OU=INF1416, CN=Administrator/emailAddress=admin@inf1416.puc-rio.br
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:c3:9e:ad:96:a5:38:a8:45:e3:50:dc:46:a9:c4:
+                    27:66:52:df:64:86:c4:b6:04:77:ff:60:1e:ed:8c:
+                    62:0b:0b:34:1e:82:75:75:b3:0b:dc:1f:ec:5f:77:
+                    d1:54:8d:1e:e9:39:11:52:36:fa:df:58:ab:7d:de:
+                    dd:e5:d8:37:34:90:2b:d5:7d:f8:79:05:29:d7:23:
+                    0c:1b:5b:de:0e:f8:4d:58:a7:aa:6f:a7:27:e5:8f:
+                    c6:08:f9:52:f2:d1:d3:42:8a:cc:c7:00:5e:6e:c7:
+                    a9:51:65:87:2b:33:82:a2:26:77:6a:78:54:67:a9:
+                    13:fc:cd:62:39:3b:59:09:24:c5:f3:0a:a2:17:c2:
+                    65:ed:7e:a5:63:5a:2c:17:4e:78:d4:f7:bc:5f:42:
+                    a2:a4:98:0b:7c:67:eb:b1:25:a4:31:75:92:41:73:
+                    39:a8:fe:34:00:23:3d:60:c7:e4:97:03:84:ec:85:
+                    4e:51:6b:8b:10:60:ba:39:f8:58:00:7c:0d:af:b3:
+                    01:c6:5c:0e:9b:6b:73:79:db:0c:9d:67:62:18:50:
+                    92:f6:fd:89:93:c9:fc:73:46:7b:32:ba:a6:cb:fa:
+                    17:0e:c3:a6:e6:fa:0d:0e:10:82:02:ec:97:6e:2a:
+                    98:a7:cf:70:62:7a:23:b5:e6:f6:a6:78:02:65:aa:
+                    97:9d
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Comment: 
+                OpenSSL Generated Certificate
+            X509v3 Subject Key Identifier: 
+                9E:50:D9:AA:B8:2D:0E:07:10:CB:1A:95:1A:0C:DC:5E:D6:DD:84:00
+            X509v3 Authority Key Identifier: 
+                keyid:23:81:3B:C3:19:2B:95:99:D9:CA:EA:3B:6B:FE:1C:24:73:C2:82:8E
+
+    Signature Algorithm: sha256WithRSAEncryption
+         78:5d:46:22:e1:40:5d:b4:6c:7e:e4:98:69:e2:0e:10:80:51:
+         4b:cf:2a:85:72:4e:4e:2f:e5:14:4e:27:6f:8b:81:9e:2e:3f:
+         11:cf:4a:3d:9f:63:ac:cc:af:22:1a:0e:97:f1:f4:ee:d9:30:
+         ba:63:66:b8:0d:c4:fa:36:37:92:eb:7e:2c:26:dd:e4:98:cd:
+         b6:b7:0a:07:3d:0f:76:5a:88:cb:f7:1f:63:ab:66:b1:70:2f:
+         3f:86:ff:81:1e:41:d6:f5:4b:48:66:89:ec:c1:ba:94:89:33:
+         51:18:96:5e:ca:86:1b:cd:79:74:00:ef:30:25:91:ff:1f:a6:
+         3e:0e:7e:b7:0e:12:04:bc:06:c1:cc:32:26:f1:7b:4c:bd:a5:
+         c5:da:76:85:75:bd:4c:11:19:d2:49:f4:13:28:4e:dd:78:39:
+         db:b1:4a:51:71:89:a5:0c:b0:f1:cc:c3:17:14:87:ad:91:5e:
+         0e:6f:ae:2e:31:bb:ec:fb:ed:5d:18:b5:62:62:8f:a8:28:dd:
+         86:c0:98:8f:4b:82:6a:3a:e3:9d:9a:d2:66:9e:aa:08:45:39:
+         17:a6:af:40:2e:dd:3e:78:2e:58:be:47:2b:c2:e0:21:76:c5:
+         c6:be:99:26:56:df:fd:0e:e0:ca:44:03:b4:f7:b0:41:65:a1:
+         30:51:53:ba
+-----BEGIN CERTIFICATE-----
+MIID9jCCAt6gAwIBAgIBBjANBgkqhkiG9w0BAQsFADCBhDELMAkGA1UEBhMCQlIx
+CzAJBgNVBAgMAlJKMQwwCgYDVQQHDANSaW8xDDAKBgNVBAoMA1BVQzEQMA4GA1UE
+CwwHSU5GMTQxNjETMBEGA1UEAwwKQUMgSU5GMTQxNjElMCMGCSqGSIb3DQEJARYW
+Y2FAZ3JhZC5pbmYucHVjLXJpby5icjAeFw0yMjA0MjkxNDAxMzBaFw0yNTA0Mjgx
+NDAxMzBaMHsxCzAJBgNVBAYTAkJSMQswCQYDVQQIDAJSSjEMMAoGA1UECgwDUFVD
+MRAwDgYDVQQLDAdJTkYxNDE2MRYwFAYDVQQDDA1BZG1pbmlzdHJhdG9yMScwJQYJ
+KoZIhvcNAQkBFhhhZG1pbkBpbmYxNDE2LnB1Yy1yaW8uYnIwggEiMA0GCSqGSIb3
+DQEBAQUAA4IBDwAwggEKAoIBAQDDnq2WpTioReNQ3EapxCdmUt9khsS2BHf/YB7t
+jGILCzQegnV1swvcH+xfd9FUjR7pORFSNvrfWKt93t3l2Dc0kCvVffh5BSnXIwwb
+W94O+E1Yp6pvpyflj8YI+VLy0dNCiszHAF5ux6lRZYcrM4KiJndqeFRnqRP8zWI5
+O1kJJMXzCqIXwmXtfqVjWiwXTnjU97xfQqKkmAt8Z+uxJaQxdZJBczmo/jQAIz1g
+x+SXA4TshU5Ra4sQYLo5+FgAfA2vswHGXA6ba3N52wydZ2IYUJL2/YmTyfxzRnsy
+uqbL+hcOw6bm+g0OEIIC7JduKpinz3BieiO15vameAJlqpedAgMBAAGjezB5MAkG
+A1UdEwQCMAAwLAYJYIZIAYb4QgENBB8WHU9wZW5TU0wgR2VuZXJhdGVkIENlcnRp
+ZmljYXRlMB0GA1UdDgQWBBSeUNmquC0OBxDLGpUaDNxe1t2EADAfBgNVHSMEGDAW
+gBQjgTvDGSuVmdnK6jtr/hwkc8KCjjANBgkqhkiG9w0BAQsFAAOCAQEAeF1GIuFA
+XbRsfuSYaeIOEIBRS88qhXJOTi/lFE4nb4uBni4/Ec9KPZ9jrMyvIhoOl/H07tkw
+umNmuA3E+jY3kut+LCbd5JjNtrcKBz0PdlqIy/cfY6tmsXAvP4b/gR5B1vVLSGaJ
+7MG6lIkzURiWXsqGG815dADvMCWR/x+mPg5+tw4SBLwGwcwyJvF7TL2lxdp2hXW9
+TBEZ0kn0EyhO3Xg527FKUXGJpQyw8czDFxSHrZFeDm+uLjG77PvtXRi1YmKPqCjd
+hsCYj0uCajrjnZrSZp6qCEU5F6avQC7dPnguWL5HK8LgIXbFxr6ZJlbf/Q7gykQD
+tPewQWWhMFFTug==
+-----END CERTIFICATE-----
