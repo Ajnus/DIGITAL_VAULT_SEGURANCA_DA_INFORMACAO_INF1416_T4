@@ -133,7 +133,7 @@ public class RestoreValidateSuite {
     }
     //ainda a ser testado
     public static PrivateKey RestorePrivateKey(File keyFile, String fraseSecreta){
-
+        //TODO: limpa o cabeçalho e os marcadores de inicio e fim do conteudo da chave privada
         byte[] Kprivate = null;
         try{
         byte[] keyArray = byteFromFile(keyFile);

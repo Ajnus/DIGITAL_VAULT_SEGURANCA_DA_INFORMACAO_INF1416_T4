@@ -3,6 +3,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
 
 import java.nio.ByteBuffer;
+
 public class TOTP {
     private byte [] key = null;
     private long timeStepInSeconds = 30;
@@ -20,15 +21,14 @@ public class TOTP {
     private String getTOTPCodeFromHash(byte[] hash) {
         String result = null;
         //extrair bytes significativos
-        byte offset = hash[hash.length-1];
-        //convert para 6 digitos
-        //HOTP value = HOTP(K, C) mod 10^offset
-        //HOTP(K, C) = truncate(HMACH(K, C)),
-        //where the counter C must be used big-endian. 
-        //https://en.wikipedia.org/wiki/HMAC-based_one-time_password
-        //https://en.wikipedia.org/wiki/Time-based_one-time_password
-        
-        //convert para String e retorna
+        int offset = hash[19] & 0xf;
+        int bin_code = (hash[offset] & 0x7f) << 24 |
+            (hash[offset] & 0xff) << 16 | (hash[offset] & 0xff) << 8 | (hash[offset] & 0xff);
+
+        result = String.valueOf(bin_code % (10^6));
+
+        //https://datatracker.ietf.org/doc/html/rfc4226#section-5.4
+
         return result;
     }
     // Recebe o contador e a chave secreta para produzir o hash HMAC-SHA1.
