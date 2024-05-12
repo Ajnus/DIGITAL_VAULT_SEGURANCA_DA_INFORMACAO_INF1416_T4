@@ -1,10 +1,9 @@
 import java.io.File;
 import java.security.PublicKey;
 import java.security.PrivateKey;
-
 public class TesteUnitarioProgram {
-    public static void main(){
-
+    public static void main(String[] args){
+        //Provider p = new org.bouncycastle.jce.provider.BouncyCastleProvider();
         String pathAsd = "Pacote-T4/Files/index.asd";
         String pathEnv = "Pacote-T4/Files/index.env";
         String pathEnc = "Pacote-T4/Files/index.enc";
@@ -19,7 +18,8 @@ public class TesteUnitarioProgram {
         String fraseSecreta = "admin";
 
         PublicKey chavePublica = RestoreValidateSuite.RestorePublicKey(certificado);
+        //System.out.println("Public key: "+ new Base32(Base32.Alphabet.BASE32,true,true).toString(chavePublica.getEncoded()));
         PrivateKey chaveUsuario = RestoreValidateSuite.RestorePrivateKey(keyFile, fraseSecreta);
-        boolean result = RestoreValidateSuite.Validate(envelope, assinatura, encriptado, certificado, chaveUsuario);
+        //boolean result = RestoreValidateSuite.Validate(envelope, assinatura, encriptado, certificado, chaveUsuario);
     }
 }

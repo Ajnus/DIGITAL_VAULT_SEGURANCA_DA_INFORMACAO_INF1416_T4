@@ -3,7 +3,8 @@ import java.security.NoSuchAlgorithmException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Key;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 
 import java.util.Base64;
+import java.util.Base64.Decoder;
 
 import javax.security.cert.X509Certificate;
 import javax.security.cert.CertificateException;
@@ -145,6 +147,15 @@ public class RestoreValidateSuite {
         SecretKey KAES = keyGen.generateKey();
 
         Kprivate = Decriptar("AES/ECB/PKCS5Padding",keyArray, KAES);
+        String editKeydata = new String(Kprivate);
+        // remove "-----BEGIN [encryption] [PRIVATE/PUBLIC] KEY-----"
+        editKeydata = editKeydata.replaceAll("-----BEGIN PRIVATE KEY-----", "");
+        // remove "-----END [encryption] [PRIVATE/PUBLIC] KEY-----"
+        editKeydata = editKeydata.replaceAll("-----END PRIVATE KEY-----", "");
+        // remove caracteres em branco
+        editKeydata.replaceAll("\\s","");
+        Kprivate = editKeydata.getBytes();
+
         } catch(NoSuchAlgorithmException e){
             System.err.println("Algoritmo de geração de chave simétrica não encontrado");
             System.exit(1);
@@ -152,9 +163,10 @@ public class RestoreValidateSuite {
 
         PKCS8EncodedKeySpec detalheChave = null;
         {
-        byte[] decodedBytes = Base64.getDecoder().decode(Kprivate);
-        String chavePrivadaDecodificada = new String(decodedBytes);
-        detalheChave = new PKCS8EncodedKeySpec(chavePrivadaDecodificada.getBytes());
+        Decoder decodificador = Base64.getDecoder();
+        byte[] decodedBytes = null;
+        int result = decodificador.decode(Kprivate, decodedBytes);
+        detalheChave = new PKCS8EncodedKeySpec(decodedBytes);
         }
 
         PrivateKey chave = null;
