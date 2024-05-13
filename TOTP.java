@@ -2,8 +2,8 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
 
-import java.nio.ByteBuffer;
-
+import java.security.NoSuchAlgorithmException;
+import java.security.InvalidKeyException;
 public class TOTP {
     private byte [] key = null;
     private long timeStepInSeconds = 30;
@@ -12,9 +12,18 @@ public class TOTP {
     // chave secreta e armazenar em key. Em caso de erro, gera Exception.
     public TOTP(String base32EncodedSecret, long timeStepInSeconds)
     throws Exception {
-        this.timeStepInSeconds = timeStepInSeconds;
+
+        boolean checkAlphabet = base32EncodedSecret.contains("[?!"+Base32.Alphabet.BASE32+"]+") |
+        base32EncodedSecret.contains("[?!"+Base32.Alphabet.BASE32HEX+"]+");
+        if (checkAlphabet) {
+            System.err.println("String não esta de acordo com a base 32");
+            System.exit(1);
+        }
         Base32 base = new Base32(Base32.Alphabet.BASE32, true, true);
         key = base.fromString(base32EncodedSecret);
+
+
+        this.timeStepInSeconds = timeStepInSeconds;
     }
     // Recebe o HASH HMAC-SHA1 e determina o código TOTP de 6 algarismos
     // decimais, prefixado com zeros quando necessário.
@@ -23,7 +32,9 @@ public class TOTP {
         //extrair bytes significativos
         int offset = hash[19] & 0xf;
         int bin_code = (hash[offset] & 0x7f) << 24 |
-            (hash[offset] & 0xff) << 16 | (hash[offset] & 0xff) << 8 | (hash[offset] & 0xff);
+            (hash[offset] & 0xff) << 16 | 
+            (hash[offset] & 0xff) << 8 | 
+            (hash[offset] & 0xff);
 
         result = String.valueOf(bin_code % (10^6));
 
@@ -35,22 +46,34 @@ public class TOTP {
     private byte[] HMAC_SHA1(byte[] counter, byte[] keyByteArray) {
         byte[] result = null;
         try{
-            Mac hmacsha1 = Mac.getInstance("SHA1");
+            Mac hmacsha1 = Mac.getInstance("HmacSHA1");
             SecretKeySpec chave = new SecretKeySpec(keyByteArray, 0, 20, "SHA1");
             hmacsha1.init(chave);
             result = hmacsha1.doFinal(counter);
-        } catch(Exception e) {
-            System.err.println("Erro no usao do algoritmo SHA1 na criação do HMAC");
+        } catch(NoSuchAlgorithmException e){
+            System.err.println("Algoritmo SHA1 não foi encontrado");
+        } catch(InvalidKeyException e){
+            System.err.println("chave invalida");
         }
+        //catch(Exception e) {
+        //    System.err.println("Erro no usa do algoritmo SHA1 na criacao do HMAC");
+        //}
         return result;
     }
     // Recebe o intervalo de tempo e executa o algoritmo TOTP para produzir
     // o código TOTP. Usa os métodos auxiliares getTOTPCodeFromHash e HMAC_SHA1.
     private String TOTPCode(long timeInterval) {
         long numIntervalos = timeInterval / 1000 / this.timeStepInSeconds;
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        buffer.putLong(numIntervalos);
-        byte[] counter = buffer.array();
+        byte[] counter = new byte[]{
+            (byte) ((numIntervalos >> 56) & 0xff),
+            (byte) ((numIntervalos >> 48) & 0xff),
+            (byte) ((numIntervalos >> 40) & 0xff),
+            (byte) ((numIntervalos >> 32) & 0xff),
+            (byte) ((numIntervalos >> 24) & 0xff),
+            (byte) ((numIntervalos >> 16) & 0xff),
+            (byte) ((numIntervalos >> 8) & 0xff),
+            (byte) ((numIntervalos) & 0xff)
+        };
         byte[] HMAC_hash = this.HMAC_SHA1(counter, this.key);
         return getTOTPCodeFromHash(HMAC_hash);
     }
@@ -62,9 +85,13 @@ public class TOTP {
     // Deve considerar um atraso ou adiantamento de 30 segundos no
     // relógio da máquina que gerou o código TOTP.
     public boolean validateCode(String inputTOTP) {
+        try{
+            Integer.parseInt(inputTOTP);
+        }catch(Exception e){return false;}
+
         boolean result = false;
-        long currentTime = new Date().getTime();
         long margimErro = this.timeStepInSeconds *1000;
+        long currentTime = new Date().getTime();
         String TOTP1 = TOTPCode(currentTime);
         String TOTP2 = TOTPCode(currentTime - margimErro);
         String TOTP3 = TOTPCode(currentTime + margimErro);

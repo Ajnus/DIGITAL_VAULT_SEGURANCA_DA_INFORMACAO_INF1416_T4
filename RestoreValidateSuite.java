@@ -146,14 +146,13 @@ public class RestoreValidateSuite {
         keyGen.init(256, secureRandom);
         SecretKey KAES = keyGen.generateKey();
 
-        Kprivate = Decriptar("AES/ECB/PKCS5Padding",keyArray, KAES);
+        Kprivate = Decriptar("AES/ECB/PKCS5Padding", keyArray, KAES);
         String editKeydata = new String(Kprivate);
-        // remove "-----BEGIN [encryption] [PRIVATE/PUBLIC] KEY-----"
+        //faça as operações sem mudar de byte[] para String e voltar
         editKeydata = editKeydata.replaceAll("-----BEGIN PRIVATE KEY-----", "");
-        // remove "-----END [encryption] [PRIVATE/PUBLIC] KEY-----"
         editKeydata = editKeydata.replaceAll("-----END PRIVATE KEY-----", "");
-        // remove caracteres em branco
         editKeydata.replaceAll("\\s","");
+
         Kprivate = editKeydata.getBytes();
 
         } catch(NoSuchAlgorithmException e){
