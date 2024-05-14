@@ -1,9 +1,6 @@
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
-
-import java.security.NoSuchAlgorithmException;
-import java.security.InvalidKeyException;
 public class TOTP {
     private byte [] key = null;
     private long timeStepInSeconds = 30;
@@ -13,15 +10,15 @@ public class TOTP {
     public TOTP(String base32EncodedSecret, long timeStepInSeconds)
     throws Exception {
 
-        boolean checkAlphabet = base32EncodedSecret.contains("[?!"+Base32.Alphabet.BASE32+"]+") |
+        boolean checkAlphabet = base32EncodedSecret.contains("[?!"+Base32.Alphabet.BASE32+"]+") &
         base32EncodedSecret.contains("[?!"+Base32.Alphabet.BASE32HEX+"]+");
+
         if (checkAlphabet) {
             System.err.println("String não esta de acordo com a base 32");
             System.exit(1);
         }
         Base32 base = new Base32(Base32.Alphabet.BASE32, true, true);
         key = base.fromString(base32EncodedSecret);
-
 
         this.timeStepInSeconds = timeStepInSeconds;
     }
@@ -32,14 +29,12 @@ public class TOTP {
         //extrair bytes significativos
         int offset = hash[19] & 0xf;
         int bin_code = (hash[offset] & 0x7f) << 24 |
-            (hash[offset] & 0xff) << 16 | 
-            (hash[offset] & 0xff) << 8 | 
-            (hash[offset] & 0xff);
+            (hash[offset] & 0xff) << 16 |
+            (hash[offset] & 0xff) << 8 |
+            (hash[offset] & 0xff) << 0;
 
-        result = String.valueOf(bin_code % (10^6));
-
+        result = String.format("%06d", bin_code % (1000000));
         //https://datatracker.ietf.org/doc/html/rfc4226#section-5.4
-
         return result;
     }
     // Recebe o contador e a chave secreta para produzir o hash HMAC-SHA1.
@@ -47,23 +42,22 @@ public class TOTP {
         byte[] result = null;
         try{
             Mac hmacsha1 = Mac.getInstance("HmacSHA1");
-            SecretKeySpec chave = new SecretKeySpec(keyByteArray, 0, 20, "SHA1");
+            SecretKeySpec chave = new SecretKeySpec(keyByteArray, "HmacSHA1");
+
             hmacsha1.init(chave);
+
             result = hmacsha1.doFinal(counter);
-        } catch(NoSuchAlgorithmException e){
-            System.err.println("Algoritmo SHA1 não foi encontrado");
-        } catch(InvalidKeyException e){
-            System.err.println("chave invalida");
+        } catch(Exception e) {
+            System.err.println("Erro no usa do algoritmo SHA1 na criacao do HMAC");
         }
-        //catch(Exception e) {
-        //    System.err.println("Erro no usa do algoritmo SHA1 na criacao do HMAC");
-        //}
         return result;
     }
     // Recebe o intervalo de tempo e executa o algoritmo TOTP para produzir
     // o código TOTP. Usa os métodos auxiliares getTOTPCodeFromHash e HMAC_SHA1.
     private String TOTPCode(long timeInterval) {
-        long numIntervalos = timeInterval / 1000 / this.timeStepInSeconds;
+        long timeStepInMiliseconds = 1000 * timeStepInSeconds;
+        long numIntervalos = timeInterval / timeStepInMiliseconds;
+
         byte[] counter = new byte[]{
             (byte) ((numIntervalos >> 56) & 0xff),
             (byte) ((numIntervalos >> 48) & 0xff),
@@ -72,10 +66,13 @@ public class TOTP {
             (byte) ((numIntervalos >> 24) & 0xff),
             (byte) ((numIntervalos >> 16) & 0xff),
             (byte) ((numIntervalos >> 8) & 0xff),
-            (byte) ((numIntervalos) & 0xff)
+            (byte) ((numIntervalos >> 0) & 0xff)
         };
-        byte[] HMAC_hash = this.HMAC_SHA1(counter, this.key);
-        return getTOTPCodeFromHash(HMAC_hash);
+
+        byte[] HMAC_hash = HMAC_SHA1(counter, key);
+        String result = getTOTPCodeFromHash(HMAC_hash);
+        System.out.println(result);
+        return result;
     }
     // Método que é utilizado para solicitar a geração do código TOTP.
     public String generateCode() {

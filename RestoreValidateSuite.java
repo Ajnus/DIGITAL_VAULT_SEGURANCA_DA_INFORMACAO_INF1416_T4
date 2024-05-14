@@ -135,7 +135,6 @@ public class RestoreValidateSuite {
     }
     //ainda a ser testado
     public static PrivateKey RestorePrivateKey(File keyFile, String fraseSecreta){
-        //TODO: limpa o cabeçalho e os marcadores de inicio e fim do conteudo da chave privada
         byte[] Kprivate = null;
         try{
         byte[] keyArray = byteFromFile(keyFile);
@@ -148,11 +147,9 @@ public class RestoreValidateSuite {
 
         Kprivate = Decriptar("AES/ECB/PKCS5Padding", keyArray, KAES);
         String editKeydata = new String(Kprivate);
-        //faça as operações sem mudar de byte[] para String e voltar
         editKeydata = editKeydata.replaceAll("-----BEGIN PRIVATE KEY-----", "");
         editKeydata = editKeydata.replaceAll("-----END PRIVATE KEY-----", "");
-        editKeydata.replaceAll("\\s","");
-
+        editKeydata = editKeydata.replaceAll("\\s","");
         Kprivate = editKeydata.getBytes();
 
         } catch(NoSuchAlgorithmException e){
@@ -163,7 +160,7 @@ public class RestoreValidateSuite {
         PKCS8EncodedKeySpec detalheChave = null;
         {
         Decoder decodificador = Base64.getDecoder();
-        byte[] decodedBytes = null;
+        byte[] decodedBytes = new byte[Kprivate.length];
         int result = decodificador.decode(Kprivate, decodedBytes);
         detalheChave = new PKCS8EncodedKeySpec(decodedBytes);
         }
@@ -171,8 +168,7 @@ public class RestoreValidateSuite {
         PrivateKey chave = null;
         try {
 
-        //keyspec
-        KeyFactory keyFac = KeyFactory.getInstance("AES");
+        KeyFactory keyFac = KeyFactory.getInstance("RSA");
         chave = keyFac.generatePrivate(detalheChave);
 
         }catch(NoSuchAlgorithmException e){
