@@ -55,7 +55,7 @@ public class RestoreValidateSuite {
             return false;
         }
 
-        if(!digitalSignature.getName().substring(tamNameCRT-4).equals(".crt")){
+        if(!certificadoUsuario.getName().substring(tamNameCRT-4).equals(".crt")){
             System.err.println("Certificado invalido");
             return false;
         }
@@ -109,7 +109,7 @@ public class RestoreValidateSuite {
         byte[] CertificateArray = byteFromFile(certificadoUsuario);
         X509Certificate certificado = X509Certificate.getInstance(CertificateArray);
 
-        Signature assinaturaVerificacao = Signature.getInstance("RSAwithSHA1");
+        Signature assinaturaVerificacao = Signature.getInstance("SHA1withRSA");
         assinaturaVerificacao.initSign(chaveUsuario);
         assinaturaVerificacao.update(arquivoDecriptografado);
         byte[] assinaturaTeste = assinaturaVerificacao.sign();
