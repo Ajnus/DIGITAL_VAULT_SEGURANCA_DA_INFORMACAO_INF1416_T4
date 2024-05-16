@@ -1,6 +1,12 @@
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
+
+// -------------------------
+// Jam Ajna Soares - 2211689 
+// Olavo Lucas     - 1811181
+// -------------------------
+
 public class TOTP {
     private byte [] key = null;
     private long timeStepInSeconds = 30;

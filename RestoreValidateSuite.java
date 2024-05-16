@@ -31,6 +31,10 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 
+// -------------------------
+// Jam Ajna Soares - 2211689 
+// Olavo Lucas     - 1811181
+// -------------------------
 public class RestoreValidateSuite {
     //ainda a ser testado
     public static boolean Validate(File digitalEnvelope, File digitalSignature, File arquivoENCriptografado, File certificadoUsuario, PrivateKey chaveUsuario){

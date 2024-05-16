@@ -1,3 +1,8 @@
+// -------------------------
+// Jam Ajna Soares - 2211689 
+// Olavo Lucas     - 1811181
+// -------------------------
+
 public class AutenticationControler {
     public static boolean Authenticate(String nomeUsuario, String password){
         boolean result = false;

@@ -1,4 +1,7 @@
-
+// -------------------------
+// Jam Ajna Soares - 2211689 
+// Olavo Lucas     - 1811181
+// -------------------------
 
 public class Sistema {
     private static Sistema sistema;
