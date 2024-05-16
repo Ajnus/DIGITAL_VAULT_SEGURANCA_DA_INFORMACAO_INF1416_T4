@@ -1,7 +1,13 @@
+package view;
 import java.io.File;
 import java.security.PublicKey;
 import java.security.PrivateKey;
 import java.util.Scanner;
+
+import model.Base32;
+import model.RestoreValidateSuite;
+import model.TOTP;
+
 import java.lang.StringBuffer;
 
 public class TesteUnitarioProgram {

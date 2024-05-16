@@ -1,3 +1,4 @@
+package model;
 import java.io.*;
 /**
 * Routines for converting between Strings of Base32-encoded data and arrays

@@ -1,5 +1,7 @@
+package model;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+
 import java.util.Date;
 
 // -------------------------
