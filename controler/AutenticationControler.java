@@ -1,10 +1,18 @@
 package controler;
+
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
+import model.TOTP;
 // -------------------------
 // Jam Ajna Soares - 2211689 
 // Olavo Lucas     - 1811181
 // -------------------------
 
 public class AutenticationControler {
+    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    //log(Level level, String msg, Object[] params)
     public static boolean Authenticate(String nomeUsuario, String password){
         boolean result = false;
 
