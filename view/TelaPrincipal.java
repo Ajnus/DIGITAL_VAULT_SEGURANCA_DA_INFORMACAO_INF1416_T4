@@ -17,10 +17,14 @@ public class TelaPrincipal {
         tela = new JFrame("Tela Principal");
         {
             //adiciona elementos do cabeçalho
+            //JPanel usuario
+            //Jpanel Grupo
+            //JPanel email
         }
 
         {
             //adiciona elemento <<total de acessos do usuario>> da estatistica
+            //JPanel numeroAcesso
         }
 
         {

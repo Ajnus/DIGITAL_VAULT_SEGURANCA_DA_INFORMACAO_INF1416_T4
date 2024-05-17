@@ -18,102 +18,93 @@ public class TelaRegistro {
 
   private static JFrame tela;
 
-  private static JPanel cabecalho;
-  private static JPanel estatistica;
-  private static JPanel corpo;
+  protected TelaRegistro(boolean firstTime){
 
-  private static JPanel emailComponent;
-  private static JPanel certificadoComponent;
-  private static JPanel chaveComponent;
-  private static JPanel fraseComponent;
-  private static JPanel grupoComponent;
-  private static JPanel senhaComponent;
-  private static JPanel bottomButtonsComponent;
-
-  private TelaRegistro(){
     listaNaoPermitida ="0123456789876543210";
 
     tela = new JFrame("Registro");
 
     JPanel painel = new JPanel(new BoxLayout(tela,BoxLayout.Y_AXIS));
 
-    cabecalho = new JPanel(new BoxLayout(painel, BoxLayout.Y_AXIS));
-    estatistica = new JPanel(new BoxLayout(painel, BoxLayout.Y_AXIS));
-    corpo = new JPanel(new BoxLayout(painel, BoxLayout.Y_AXIS));
+    JPanel cabecalho = new JPanel(new BoxLayout(painel, BoxLayout.Y_AXIS));
+    JPanel estatistica = new JPanel(new BoxLayout(painel, BoxLayout.Y_AXIS));
+    JPanel corpo = new JPanel(new BoxLayout(painel, BoxLayout.Y_AXIS));
 
     {
+    JPanel emailComponent = new JPanel(new BoxLayout(corpo, BoxLayout.X_AXIS));
     JLabel email = new JLabel("email:");
     JTextField emailCampo = new JTextField(256);
-    emailComponent = new JPanel(new BoxLayout(corpo, BoxLayout.X_AXIS));
     emailComponent.add(email);
     emailComponent.add(emailCampo);
+    corpo.add(emailComponent);
     }
 
     {
+    JPanel certificadoComponent = new JPanel(new BoxLayout(corpo, BoxLayout.X_AXIS));
     JLabel certificado = new JLabel("certificado:");
     JTextField certificadoCampo = new JTextField(256);
-    certificadoComponent = new JPanel(new BoxLayout(corpo, BoxLayout.X_AXIS));
     certificadoComponent.add(certificado);
     certificadoComponent.add(certificadoCampo);
+    corpo.add(certificadoComponent);
     }
 
     {
+    JPanel chaveComponent = new JPanel(new BoxLayout(corpo, BoxLayout.X_AXIS));
     JLabel arquivoChave = new JLabel("Chave privada");
     JTextField chaveCampo = new JTextField(256);
-    chaveComponent = new JPanel(new BoxLayout(corpo, BoxLayout.X_AXIS));
     chaveComponent.add(arquivoChave);
     chaveComponent.add(chaveCampo);
+    corpo.add(chaveComponent);
     }
 
     {
+    JPanel fraseComponent = new JPanel(new BoxLayout(corpo, BoxLayout.X_AXIS));
     JLabel fraseSecreta = new JLabel("Frase Secreta:");
     JTextField fraseCampo = new JTextField(256);
-    fraseComponent = new JPanel(new BoxLayout(corpo, BoxLayout.X_AXIS));
     fraseComponent.add(fraseSecreta);
     fraseComponent.add(fraseCampo);
+    corpo.add(fraseComponent);
     }
 
     {
     JLabel grupo = new JLabel("Grupo:");
     JComboBox<String> grupoComboBox = new JComboBox<String>();
-    grupoComponent = new JPanel(new BoxLayout(corpo, BoxLayout.X_AXIS));
+    JPanel grupoComponent = new JPanel(new BoxLayout(corpo, BoxLayout.X_AXIS));
     grupoComponent.add(grupo);
     grupoComponent.add(grupoComboBox);
+    corpo.add(grupoComponent);
     }
 
     {
-    JLabel senha = new JLabel("Senha: ");
+    JLabel senha = new JLabel("Senha:");
     JTextField senhaCampo = new JTextField(10);
-    senhaComponent = new JPanel(new BoxLayout(corpo, BoxLayout.X_AXIS));
+    JPanel senhaComponent = new JPanel(new BoxLayout(corpo, BoxLayout.X_AXIS));
     senhaComponent.add(senha);
     senhaComponent.add(senhaCampo);
+    corpo.add(senhaComponent);
     }
 
     {
     JButton ok = new JButton("ok");
     JButton volta = new JButton("voltar");
-    bottomButtonsComponent = new JPanel(new BoxLayout(corpo, BoxLayout.X_AXIS));
+    JPanel bottomButtonsComponent = new JPanel(new BoxLayout(corpo, BoxLayout.X_AXIS));
     bottomButtonsComponent.add(ok);
     bottomButtonsComponent.add(volta);
+    corpo.add(bottomButtonsComponent);
     }
 
     {
       //adiciona componentes do cabeçalho
+      //JPanel usuario
+      //Jpanel Grupo
+      //JPanel email
     }
 
     {
       //adiciona componente <<Total de usuários no banco>> do estatistica
+      //JPanel numeroAcesso
     }
 
-    corpo.add(emailComponent);
-    corpo.add(certificadoComponent);
-    corpo.add(chaveComponent);
-    corpo.add(fraseComponent);
-    corpo.add(grupoComponent);
-    corpo.add(senhaComponent);
-    corpo.add(bottomButtonsComponent);
-
-    
     painel.add(cabecalho);
     painel.add(estatistica);
     painel.add(corpo);
@@ -123,6 +114,8 @@ public class TelaRegistro {
     tela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     tela.setVisible(true);
   }
+
+  protected TelaRegistro(){this(false);}
 
 }
 

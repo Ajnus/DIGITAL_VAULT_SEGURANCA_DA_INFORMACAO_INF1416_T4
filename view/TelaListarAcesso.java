@@ -22,11 +22,15 @@ public class TelaListarAcesso {
         JTable listaArquivo;
 
         {
-            //adiciona componentes do cabeçalho
+        //adiciona componentes do cabeçalho
+        //JPanel usuario
+        //Jpanel Grupo
+        //JPanel email
         }
 
         {
-            //adiciona componente <<Total de acessos do usuário>> do estatistica
+        //adiciona componente <<Total de acessos do usuário>> do estatistica
+        //JPanel numeroAcesso
         }
 
         {

@@ -1,11 +1,7 @@
 package model;
+
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Key;
@@ -18,6 +14,8 @@ import java.security.SignatureException;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import java.util.Base64;
 import java.util.Base64.Decoder;
@@ -32,6 +30,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 
+import java.nio.channels.FileChannel;
 // -------------------------
 // Jam Ajna Soares - 2211689 
 // Olavo Lucas     - 1811181
@@ -251,4 +250,54 @@ public class RestoreValidateSuite {
         return result;
     }
 
+    public static void DecryptFile(File digitalEnvelope, File digitalSignature, File arquivoENCriptografado, File certificadoUsuario, PrivateKey chaveUsuario){
+        boolean validacao = Validate(digitalEnvelope, digitalSignature, arquivoENCriptografado, certificadoUsuario, chaveUsuario);
+        if (!validacao){
+            return;
+        }
+        byte[] semente = null;
+        {
+        byte[] EnvelopeArray = byteFromFile(digitalEnvelope);
+        semente = Decriptar("RSA/ECB/PKCS1Padding", EnvelopeArray, chaveUsuario);
+
+        }
+
+        byte[] arquivoDecriptografado = null;
+        try {
+        byte[] ENCriptedArray = byteFromFile(arquivoENCriptografado);
+
+        SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+        secureRandom.setSeed(semente);
+        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+        keyGen.init(256, secureRandom);
+        SecretKey KAES = keyGen.generateKey();
+
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, KAES);
+        arquivoDecriptografado = cipher.doFinal(ENCriptedArray);
+        } catch(BadPaddingException e) {
+            System.err.println("Erro no uso do padding na decriptografia do envelope");
+            System.exit(1);
+        } catch(NoSuchAlgorithmException e) {
+            System.err.println("Algorithmo na decriptografia do envelope não encontrado");
+            System.exit(1);
+        } catch(NoSuchPaddingException e){
+            System.err.println("Padding na decriptografia do envelope não encontrado");
+            System.exit(1);
+        } catch(InvalidKeyException e){
+            System.err.println("Chave Invalida na decriptografia do envelope");
+            System.exit(1);
+        } catch(IllegalBlockSizeException e){
+            System.err.println("Array de bytes foi feita de maneira incorreta");
+            System.exit(1);
+        }
+        //write decrypted file with FileChannel
+        //FileOutputStream writer = new FileOutputStream(Endereco_file);
+        //FileChannel channel = writer.getChannel();
+        //ByteBuffer buff = ByteBuffer.wrap(arquivoDecriptografado);
+        //channel.write(buff);
+        //channel.close();
+        //writer.close();
+        System.out.println(arquivoDecriptografado);
+    }
 }

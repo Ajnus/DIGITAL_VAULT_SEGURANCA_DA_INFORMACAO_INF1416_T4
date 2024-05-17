@@ -25,11 +25,15 @@ public class TelaSaida {
         corpo = new JPanel(new BoxLayout(painel, BoxLayout.Y_AXIS));
 
         {
-            //adicionar elementos do cabecalho
+        //adicionar elementos do cabecalho
+        //JPanel usuario
+        //Jpanel Grupo
+        //JPanel email
         }
 
         {
-            //adiciona elemento <<total de acesso do  usuário>> da estatistica
+        //adiciona elemento <<total de acesso do  usuário>> da estatistica
+        //JPanel NumAcesso
         }
 
         {
