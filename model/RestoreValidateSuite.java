@@ -16,7 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 
@@ -29,6 +29,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.BadPaddingException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.IllegalBlockSizeException;
+import javax.security.auth.DestroyFailedException;
 
 import java.nio.channels.FileChannel;
 // -------------------------
@@ -77,6 +78,7 @@ public class RestoreValidateSuite {
         byte[] EnvelopeArray = byteFromFile(digitalEnvelope);
         semente = Decriptar("RSA/ECB/PKCS1Padding", EnvelopeArray, chaveUsuario);
 
+        Arrays.fill(EnvelopeArray, (byte)0);
         }
 
         byte[] arquivoDecriptografado = null;
@@ -92,6 +94,9 @@ public class RestoreValidateSuite {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, KAES);
         arquivoDecriptografado = cipher.doFinal(ENCriptedArray);
+
+        Arrays.fill(ENCriptedArray, (byte)0);
+        KAES.destroy();
         } catch(BadPaddingException e) {
             System.err.println("Erro no uso do padding na decriptografia do envelope");
             System.exit(1);
@@ -107,6 +112,8 @@ public class RestoreValidateSuite {
         } catch(IllegalBlockSizeException e){
             System.err.println("Array de bytes foi feita de maneira incorreta");
             System.exit(1);
+        }catch (DestroyFailedException e) {
+            System.err.println("Erro no processo de limpesa das variaveis locais");
         }
 
         try{
@@ -121,6 +128,9 @@ public class RestoreValidateSuite {
         assinaturaVerificacao.initVerify(certificado.getPublicKey());
         assinaturaVerificacao.update(arquivoDecriptografado);
         result = assinaturaVerificacao.verify(assinaturaTeste);
+
+        Arrays.fill(CertificateArray, (byte)0);
+        Arrays.fill(assinaturaTeste, (byte)0);
         } catch(CertificateException e){
             System.err.println("Certificado Invalido");
             System.exit(1);
@@ -133,6 +143,11 @@ public class RestoreValidateSuite {
         } catch(SignatureException e){
             System.err.println("erro na classe Signature");
             System.exit(1);
+        }
+
+        {
+        Arrays.fill(arquivoDecriptografado, (byte)0);
+        Arrays.fill(semente, (byte)0);
         }
 
         return result;
@@ -156,9 +171,14 @@ public class RestoreValidateSuite {
         editKeydata = editKeydata.replaceAll("\\s","");
         Kprivate = editKeydata.getBytes();
 
+        KAES.destroy();
+        Arrays.fill(keyArray,(byte)0);
+
         } catch(NoSuchAlgorithmException e){
             System.err.println("Algoritmo de geração de chave simétrica não encontrado");
             System.exit(1);
+        }catch (DestroyFailedException e) {
+            System.err.println("Erro no processo de limpesa das variaveis locais");
         }
 
         PKCS8EncodedKeySpec detalheChave = null;
@@ -167,6 +187,8 @@ public class RestoreValidateSuite {
         byte[] decodedBytes = new byte[Kprivate.length];
         int result = decodificador.decode(Kprivate, decodedBytes);
         detalheChave = new PKCS8EncodedKeySpec(decodedBytes);
+
+        Arrays.fill(decodedBytes,(byte)0);
         }
 
         PrivateKey chave = null;
@@ -174,9 +196,8 @@ public class RestoreValidateSuite {
 
         KeyFactory keyFac = KeyFactory.getInstance("RSA");
         chave = keyFac.generatePrivate(detalheChave);
-
         }catch(NoSuchAlgorithmException e){
-            System.err.println("algoritmo AES não está disponível");
+            System.err.println("algoritmo RSA não está disponível");
             System.exit(1);
         } catch(InvalidKeySpecException e){
             System.err.println();
@@ -259,7 +280,7 @@ public class RestoreValidateSuite {
         {
         byte[] EnvelopeArray = byteFromFile(digitalEnvelope);
         semente = Decriptar("RSA/ECB/PKCS1Padding", EnvelopeArray, chaveUsuario);
-
+        Arrays.fill(EnvelopeArray,(byte)0);
         }
 
         byte[] arquivoDecriptografado = null;
@@ -275,6 +296,7 @@ public class RestoreValidateSuite {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, KAES);
         arquivoDecriptografado = cipher.doFinal(ENCriptedArray);
+        KAES.destroy();
         } catch(BadPaddingException e) {
             System.err.println("Erro no uso do padding na decriptografia do envelope");
             System.exit(1);
@@ -290,6 +312,8 @@ public class RestoreValidateSuite {
         } catch(IllegalBlockSizeException e){
             System.err.println("Array de bytes foi feita de maneira incorreta");
             System.exit(1);
+        }catch (DestroyFailedException e) {
+            System.err.println("Erro no processo de limpesa das variaveis locais");
         }
         //write decrypted file with FileChannel
         //FileOutputStream writer = new FileOutputStream(Endereco_file);
@@ -299,5 +323,9 @@ public class RestoreValidateSuite {
         //channel.close();
         //writer.close();
         System.out.println(arquivoDecriptografado);
+
+        {
+
+        }
     }
 }
