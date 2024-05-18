@@ -6,6 +6,11 @@ import java.util.logging.Level;
 
 import model.Sistema;
 
+// -------------------------
+// Jam Ajna Soares - 2211689 
+// Olavo Lucas     - 1811181
+// -------------------------
+
 public class SystemControler {
     private static final Sistema sistema = Sistema.getInstance();
     public SystemControler(){}
