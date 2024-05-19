@@ -1,6 +1,12 @@
-package model;
+
 import java.io.File;
 import java.security.PublicKey;
+
+import model.Base32;
+import model.RestoreValidateSuite;
+import model.TOTP;
+import model.Base32.Alphabet;
+
 import java.security.PrivateKey;
 
 import java.lang.StringBuffer;

@@ -15,15 +15,23 @@ import javax.swing.JTable;
 // -------------------------
 
 public class TelaListarAcesso {
-    private JFrame tela;
+    private static final TelaListarAcesso janela = new TelaListarAcesso();
+    private static JFrame tela;
     private static int tentativas;
 
-    public TelaListarAcesso(){
+    public static TelaListarAcesso getJanela(){return janela;}
+    public JFrame getTela(){return tela;}
+
+    private TelaListarAcesso(){
         tela = new JFrame();
-        JPanel painel = new JPanel(new BoxLayout(tela,BoxLayout.Y_AXIS));
-        JPanel cabecalho = new JPanel(new BoxLayout(painel,BoxLayout.Y_AXIS));
-        JPanel estatistica = new JPanel(new BoxLayout(painel,BoxLayout.Y_AXIS));
-        JPanel corpo = new JPanel(new BoxLayout(painel,BoxLayout.Y_AXIS));
+        JPanel painel = new JPanel();
+        painel.setLayout(new BoxLayout(painel,BoxLayout.Y_AXIS));
+        JPanel cabecalho = new JPanel();
+        cabecalho.setLayout(new BoxLayout(cabecalho,BoxLayout.Y_AXIS));
+        JPanel estatistica = new JPanel();
+        estatistica.setLayout(new BoxLayout(estatistica,BoxLayout.Y_AXIS));
+        JPanel corpo = new JPanel();
+        corpo.setLayout(new BoxLayout(painel,BoxLayout.Y_AXIS));
         JTable listaArquivo;
 
         {
@@ -41,12 +49,14 @@ public class TelaListarAcesso {
         {
         JLabel pastaEndereco = new JLabel("caminho da pasta:");
         JTextField campoPasta = new JTextField(255);
-        JPanel pasta = new JPanel(new BoxLayout(corpo, BoxLayout.X_AXIS));
+        JPanel pasta = new JPanel();
+        pasta.setLayout(new BoxLayout(pasta, BoxLayout.X_AXIS));
         pasta.add(pastaEndereco); pasta.add(campoPasta);
 
         JLabel FraseSecreta = new JLabel("FraseSecreta:");
         JPasswordField CampoFrase = new JPasswordField(255);
-        JPanel frase = new JPanel(new BoxLayout(corpo, BoxLayout.X_AXIS));
+        JPanel frase = new JPanel();
+        frase.setLayout(new BoxLayout(frase, BoxLayout.X_AXIS));
         frase.add(FraseSecreta); frase.add(CampoFrase);
 
         JButton Listar = new JButton("Listar");
@@ -67,8 +77,10 @@ public class TelaListarAcesso {
         painel.add(corpo);
 
         tela.add(painel);
-        tela.setSize(200, 300);
+        tela.setSize(400, 600);
         tela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tela.setVisible(true);
     }
+
+
 }
