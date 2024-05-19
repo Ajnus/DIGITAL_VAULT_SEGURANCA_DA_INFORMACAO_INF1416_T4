@@ -32,13 +32,15 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.security.auth.DestroyFailedException;
 
 import java.nio.channels.FileChannel;
+import java.io.FileOutputStream;
+import java.nio.ByteBuffer;
 
 // -------------------------
 // Jam Ajna Soares - 2211689 
 // Olavo Lucas     - 1811181
 // -------------------------
 public class RestoreValidateSuite {
-    //ainda a ser testado
+
     public static boolean Validate(File digitalEnvelope, File digitalSignature, File arquivoENCriptografado, File certificadoUsuario, PrivateKey chaveUsuario){
         boolean result = false;
         int tamNameENV = digitalEnvelope.getName().length();
@@ -114,7 +116,7 @@ public class RestoreValidateSuite {
             System.err.println("Array de bytes foi feita de maneira incorreta");
             System.exit(1);
         }catch (DestroyFailedException e) {
-            System.err.println("Erro no processo de limpesa das variaveis locais");
+            System.err.println("Erro no processo de limpesa das variaveis locais na decriptação do arquivo");
         }
 
         try{
@@ -153,7 +155,7 @@ public class RestoreValidateSuite {
 
         return result;
     }
-    //ainda a ser testado
+
     public static PrivateKey RestorePrivateKey(File keyFile, String fraseSecreta){
         byte[] Kprivate = null;
         try{
@@ -179,7 +181,7 @@ public class RestoreValidateSuite {
             System.err.println("Algoritmo de geração de chave simétrica não encontrado");
             System.exit(1);
         }catch (DestroyFailedException e) {
-            System.err.println("Erro no processo de limpesa das variaveis locais");
+            System.err.println("Erro no processo de limpesa das variaveis locais no processo de obtenção de chave");
         }
 
         PKCS8EncodedKeySpec detalheChave = null;
@@ -207,7 +209,7 @@ public class RestoreValidateSuite {
 
         return chave;
     }
-    //ainda a ser testado
+
     public static PublicKey RestorePublicKey(File CertificadoDigital){
 
         PublicKey chave = null;
@@ -247,6 +249,7 @@ public class RestoreValidateSuite {
         }
         return dataArray;
     }
+
     private static byte[] Decriptar(String tipo, byte[] dataArray, Key chave){
         byte[] result = null;
         try{
@@ -272,7 +275,7 @@ public class RestoreValidateSuite {
         return result;
     }
 
-    public static void DecryptFile(File digitalEnvelope, File digitalSignature, File arquivoENCriptografado, File certificadoUsuario, PrivateKey chaveUsuario){
+    public static void DecryptFile(File digitalEnvelope, File digitalSignature, File arquivoENCriptografado, File certificadoUsuario, PrivateKey chaveUsuario, String Endereco_file){
         boolean validacao = Validate(digitalEnvelope, digitalSignature, arquivoENCriptografado, certificadoUsuario, chaveUsuario);
         if (!validacao){
             return;
@@ -314,19 +317,27 @@ public class RestoreValidateSuite {
             System.err.println("Array de bytes foi feita de maneira incorreta");
             System.exit(1);
         }catch (DestroyFailedException e) {
-            System.err.println("Erro no processo de limpesa das variaveis locais");
+            System.err.println("Erro no processo de limpesa das variaveis locais na decriptação");
+            System.exit(1);
         }
         //write decrypted file with FileChannel
-        //FileOutputStream writer = new FileOutputStream(Endereco_file);
-        //FileChannel channel = writer.getChannel();
-        //ByteBuffer buff = ByteBuffer.wrap(arquivoDecriptografado);
-        //channel.write(buff);
-        //channel.close();
-        //writer.close();
+        try{
+        File arquivoDecriptado = new File(Endereco_file);
+        FileOutputStream writer = new FileOutputStream(arquivoDecriptado, false);
+        FileChannel channel = writer.getChannel();
+        ByteBuffer buff = ByteBuffer.wrap(arquivoDecriptografado);
+        channel.write(buff);
+        channel.close();
+        writer.close();
+        buff.clear();
         System.out.println(arquivoDecriptografado);
-
-        {
-
+        } catch(FileNotFoundException e){
+            System.err.println("Não foi possivel disponibilizar o arquivo decriptografado");
+            System.exit(1);
+        } catch(IOException e){
+            System.err.println("Erro na escrita do arquivo decriptografado");
+            System.exit(1);
         }
+
     }
 }

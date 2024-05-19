@@ -2,38 +2,36 @@ package model;
 import java.io.File;
 import java.security.PublicKey;
 import java.security.PrivateKey;
-import java.util.Scanner;
 
-import model.Base32;
-import model.RestoreValidateSuite;
-import model.TOTP;
-
+import java.util.Date;
 import java.lang.StringBuffer;
 
 public class TesteUnitarioProgram {
     public static void main(String[] args){
-        //Provider p = new org.bouncycastle.jce.provider.BouncyCastleProvider();
 
         TOTP cobaia_auth = null;
         try{
         String testeKey = "codigoSecreto12345";
-        String chaveCriptada = new Base32(Base32.Alphabet.BASE32, true, true).toString(testeKey.getBytes());
+        String chaveCriptada = new Base32(Base32.Alphabet.BASE32, false, false).toString(testeKey.getBytes());
 
         cobaia_auth = new TOTP(chaveCriptada, 30);
-        String codigo = cobaia_auth.generateCode();
-        System.out.println("Codigo de autenticacao do teste: " + codigo);
 
-        cobaia_auth.validateCode(codigo);
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Entre codigo de autenticacao da cobaia");
-        String codigoTerceiro = scan.nextLine();
+        String teste = cobaia_auth.TOTPCode(new Date().getTime());
+        System.out.println(teste);
+        //String codigo = cobaia_auth.generateCode();
+        //System.out.println("Codigo de autenticacao do teste: " + codigo);
 
-        if (cobaia_auth.validateCode(codigoTerceiro)){
-            System.out.println("TOTP funcionando como esperado");
-        }else{
-            System.out.println("Erro na autenticacao");
-        }
-        scan.close();
+        //cobaia_auth.validateCode(codigo);
+        //Scanner scan = new Scanner(System.in);
+        //System.out.println("Entre codigo de autenticacao da cobaia");
+        //String codigoTerceiro = scan.nextLine();
+
+        //if (cobaia_auth.validateCode(codigoTerceiro)){
+        //    System.out.println("TOTP funcionando como esperado");
+        //}else{
+        //    System.out.println("Erro na autenticacao");
+        //}
+        //scan.close();
 
         }catch(Exception e){System.err.println("Erro no teste de TOTP");System.exit(1);}
 
@@ -49,11 +47,11 @@ public class TesteUnitarioProgram {
         String pathkey = "Pacote-T4/Keys/admin-pkcs8-aes.pem";
         File keyFile = new File(pathkey);
         String fraseSecreta = "admin";
+        String nomeArquivo = "";
 
         PublicKey chavePublica = RestoreValidateSuite.RestorePublicKey(certificado);
         PrivateKey chaveUsuario = RestoreValidateSuite.RestorePrivateKey(keyFile, fraseSecreta);
-        boolean result = RestoreValidateSuite.Validate(envelope, assinatura, encriptado, certificado, chaveUsuario);
-        System.out.println("teste de validação de assinatura: "+ result);
+        RestoreValidateSuite.DecryptFile(envelope, assinatura, encriptado, certificado, chaveUsuario, nomeArquivo);
     }
     public static String HexCodeString(byte[] hexCode)
 	{

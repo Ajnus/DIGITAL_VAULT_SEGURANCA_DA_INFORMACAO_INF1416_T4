@@ -14,7 +14,8 @@ import javax.swing.JTextField;
 
 public class TelaTOTP {
     private static JFrame tela;
-
+    private static int tentativas;
+    private final int tentativasMax = 3;
     public TelaTOTP(){
         JFrame tela = new JFrame("Codigo Digital - Autenticação");
         JPanel painel = new JPanel(new BoxLayout(tela, BoxLayout.Y_AXIS));

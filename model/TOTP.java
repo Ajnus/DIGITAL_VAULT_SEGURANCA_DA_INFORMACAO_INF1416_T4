@@ -1,12 +1,12 @@
 package model;
- 
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-
 import java.util.Date;
 
 import java.nio.ByteOrder;
-
+import java.security.Security;
+import java.security.Provider;
 // -------------------------
 // Jam Ajna Soares - 2211689 
 // Olavo Lucas     - 1811181
@@ -20,13 +20,16 @@ public class TOTP {
     // chave secreta e armazenar em key. Em caso de erro, gera Exception.
     public TOTP(String base32EncodedSecret, long timeStepInSeconds)
     throws Exception {
+        if (Security.getProvider("BC") == null) {
+            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+          }
 
         boolean checkAlphabet = base32EncodedSecret.contains("[?!" + Base32.Alphabet.BASE32 + "]+");
-
         if (checkAlphabet) {
             System.err.println("String não esta de acordo com BASE32");
             System.exit(1);
         }
+
         Base32 base = new Base32(Base32.Alphabet.BASE32, false, false);
         key = base.fromString(base32EncodedSecret);
 
@@ -45,7 +48,6 @@ public class TOTP {
             (hash[offset+3] & 0xff) << 0;
 
         result = String.format("%06d", bin_code % (1000000));
-        System.out.println(result);
         return result;
     }
     // Recebe o contador e a chave secreta para produzir o hash HMAC-SHA1.
@@ -58,19 +60,20 @@ public class TOTP {
             hmacsha1.init(chave);
 
             result = hmacsha1.doFinal(counter);
+            chave.destroy();
         } catch(Exception e) {
-            System.err.println("Erro no usa do algoritmo SHA1 na criacao do HMAC");
+            System.err.println("Erro na criacao do HMAC do TOTP");
         }
         return result;
     }
     // Recebe o intervalo de tempo e executa o algoritmo TOTP para produzir
     // o código TOTP. Usa os métodos auxiliares getTOTPCodeFromHash e HMAC_SHA1.
-    private String TOTPCode(long timeInterval) {
+    public String TOTPCode(long timeInterval) {
         long numIntervalos = timeInterval / 1000 / timeStepInSeconds;
 
         byte[] counter = null;
         {
-        if (ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN)){
+        if (ByteOrder.nativeOrder().equals(ByteOrder.BIG_ENDIAN)){
             counter = new byte[]{
                 (byte) ((numIntervalos >> 56) & 0xff),
                 (byte) ((numIntervalos >> 48) & 0xff),
@@ -78,14 +81,15 @@ public class TOTP {
                 (byte) ((numIntervalos >> 32) & 0xff),
                 (byte) ((numIntervalos >> 24) & 0xff),
                 (byte) ((numIntervalos >> 16) & 0xff),
-                (byte) ((numIntervalos >> 8) & 0xff),
-                (byte) ((numIntervalos >> 0) & 0xff)
+                (byte) ((numIntervalos >>  8) & 0xff),
+                (byte) ((numIntervalos >>  0) & 0xff)
             };
         }
+
         else{
             counter = new byte[]{
-                (byte) ((numIntervalos >> 0) & 0xff),
-                (byte) ((numIntervalos >> 8) & 0xff),
+                (byte) ((numIntervalos >>  0) & 0xff),
+                (byte) ((numIntervalos >>  8) & 0xff),
                 (byte) ((numIntervalos >> 16) & 0xff),
                 (byte) ((numIntervalos >> 24) & 0xff),
                 (byte) ((numIntervalos >> 32) & 0xff),
@@ -97,8 +101,23 @@ public class TOTP {
         }
 
         byte[] HMAC_hash = HMAC_SHA1(counter, key);
+
+        System.out.println(timeInterval);
+        System.out.println(numIntervalos);
+        System.out.println(HexCodeString(key));
+        System.out.println(HexCodeString(counter));
+        System.out.println(HexCodeString(HMAC_hash));
+
         String result = getTOTPCodeFromHash(HMAC_hash);
-        System.out.println(result);
+
+        numIntervalos = 0;
+        for (int i = 0; i < HMAC_hash.length; i++){
+            HMAC_hash[i] = (byte) 0;
+        }
+        for (int i=0;i<counter.length;i++){
+            counter[i] = (byte)0;
+        }
+
         return result;
     }
     // Método que é utilizado para solicitar a geração do código TOTP.
@@ -115,10 +134,35 @@ public class TOTP {
 
         long margemErro = this.timeStepInSeconds * 1000;
         long currentTime = new Date().getTime();
-        String TOTP1 = TOTPCode(currentTime);
-        String TOTP2 = TOTPCode(currentTime - margemErro);
+        String TOTP1 = TOTPCode(currentTime - margemErro);
+        String TOTP2 = TOTPCode(currentTime);
         String TOTP3 = TOTPCode(currentTime + margemErro);
+
+        System.out.println(TOTP1);
+        System.out.println(TOTP2);
+        System.out.println(TOTP3);
+
         boolean result = TOTP1.equals(inputTOTP) || TOTP2.equals(inputTOTP) || TOTP3.equals(inputTOTP);
+
+        margemErro = 0;
+        currentTime = 0;
+        TOTP1 = "";
+        TOTP2 = "";
+        TOTP3 = "";
+
         return result;
     }
+
+    public static String HexCodeString(byte[] hexCode)
+	{
+		StringBuffer buf = new StringBuffer();
+
+		for (int i = 0; i < hexCode.length; i++)
+		{
+			String hex = Integer.toHexString(0x0100 + (hexCode[i] & 0x00FF)).substring(1);
+			buf.append((hex.length() < 2 ? "0" : "") + hex);
+		}
+
+		return buf.toString();
+	}
 }
