@@ -31,7 +31,7 @@ public class TelaListarAcesso {
         JPanel estatistica = new JPanel();
         estatistica.setLayout(new BoxLayout(estatistica,BoxLayout.Y_AXIS));
         JPanel corpo = new JPanel();
-        corpo.setLayout(new BoxLayout(painel,BoxLayout.Y_AXIS));
+        corpo.setLayout(new BoxLayout(corpo,BoxLayout.Y_AXIS));
         JTable listaArquivo;
 
         {

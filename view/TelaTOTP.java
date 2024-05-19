@@ -30,7 +30,7 @@ public class TelaTOTP {
         JPanel linha1  = new JPanel();
         linha1.setLayout(new BoxLayout(linha1, BoxLayout.X_AXIS));
         JPanel linha2  = new JPanel();
-        linha2.setLayout(new BoxLayout(painel, BoxLayout.X_AXIS));
+        linha2.setLayout(new BoxLayout(linha2, BoxLayout.X_AXIS));
 
         {
         JLabel TOTP = new JLabel("TOTP:");

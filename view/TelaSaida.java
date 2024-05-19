@@ -16,9 +16,18 @@ public class TelaSaida {
     private static final TelaSaida janela = new TelaSaida();
     private static JFrame tela;
 
+    private static JLabel usuarioNome;
+    private static JLabel grupoNome;
+    private static JLabel email;
+    private static JLabel numAcesso;
+
 
     public static TelaSaida getJanela(){return janela;}
     public JFrame getTela(){return tela;}
+    public void setUsuario(String nome){usuarioNome.setText("Usuario: " + nome);}
+    public void setGrupo(String nome){grupoNome.setText("Grupo: " + nome);}
+    public void setEmail(String nome){email.setText("email: "+ nome);}
+    public void setAcessos(int qtd){numAcesso.setText("Numero de acessos: "+ qtd);}
 
     private TelaSaida(){
 
@@ -36,14 +45,16 @@ public class TelaSaida {
 
         {
         //adicionar elementos do cabecalho
-        //JPanel usuario
-        //Jpanel Grupo
-        //JPanel email
-        }
+        usuarioNome = new JLabel("Usuario: ");
+        grupoNome = new JLabel("Grupo: ");
+        email = new JLabel("Email: ");
+        cabecalho.add(usuarioNome);
+        cabecalho.add(grupoNome);
+        cabecalho.add(email);
 
-        {
         //adiciona elemento <<total de acesso do  usuário>> da estatistica
-        //JPanel NumAcesso
+        numAcesso = new JLabel("Numero de acessos: ");
+        estatistica.add(numAcesso);
         }
 
         {

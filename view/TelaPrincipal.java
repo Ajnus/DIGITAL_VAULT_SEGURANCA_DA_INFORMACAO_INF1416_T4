@@ -22,8 +22,17 @@ public class TelaPrincipal{
     private static JFrame tela;
     private static SystemControler comunicador;
 
+    private static JLabel usuarioNome;
+    private static JLabel grupoNome;
+    private static JLabel email;
+    private static JLabel numAcesso;
+
     public static TelaPrincipal getJanela(){return janela;}
     public JFrame getTela(){return tela;}
+    public void setUsuario(String nome){usuarioNome.setText("Usuario: " + nome);}
+    public void setGrupo(String nome){grupoNome.setText("Grupo: " + nome);}
+    public void setEmail(String nome){email.setText("email: "+ nome);}
+    public void setAcessos(int qtd){numAcesso.setText("Numero de acessos: "+ qtd);}
 
     private TelaPrincipal(){
         tela = new JFrame("Tela Principal");
@@ -32,17 +41,20 @@ public class TelaPrincipal{
         JPanel estatistica = new JPanel();
         estatistica.setLayout(new BoxLayout(estatistica, BoxLayout.Y_AXIS));
         JPanel corpo = new JPanel();
-        corpo.setLayout(new BoxLayout(tela, BoxLayout.Y_AXIS));
-        {
-            //adiciona elementos do cabeçalho
-            //JPanel usuario
-            //Jpanel Grupo
-            //JPanel email
-        }
+        corpo.setLayout(new BoxLayout(corpo, BoxLayout.Y_AXIS));
 
         {
-            //adiciona elemento <<total de acessos do usuario>> da estatistica
-            //JPanel numeroAcesso
+        //adicionar elementos do cabecalho
+        usuarioNome = new JLabel("Usuario: ");
+        grupoNome = new JLabel("Grupo: ");
+        email = new JLabel("Email: ");
+        cabecalho.add(usuarioNome);
+        cabecalho.add(grupoNome);
+        cabecalho.add(email);
+
+        //adiciona elemento <<total de acesso do  usuário>> da estatistica
+        numAcesso = new JLabel("Numero de acessos: ");
+        estatistica.add(numAcesso);
         }
 
         {
@@ -66,13 +78,15 @@ public class TelaPrincipal{
         //        comunicador.switch("TelaSaida");
         //    }
         //});
-
+        corpo.add(cadastro);
+        corpo.add(consultar);
+        corpo.add(sair);
         }
 
         tela.add(cabecalho);
         tela.add(estatistica);
         tela.add(corpo);
-        tela.setSize(400, 600);
+        tela.setSize(200, 300);
         tela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tela.setVisible(true);
     }
