@@ -22,7 +22,7 @@ public class TOTP {
     throws Exception {
         if (Security.getProvider("BC") == null) {
             Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-          }
+        }
 
         boolean checkAlphabet = base32EncodedSecret.contains("[?!" + Base32.Alphabet.BASE32 + "]+");
         if (checkAlphabet) {
@@ -54,7 +54,7 @@ public class TOTP {
     private byte[] HMAC_SHA1(byte[] counter, byte[] keyByteArray) {
         byte[] result = null;
         try{
-            Mac hmacsha1 = Mac.getInstance("HmacSHA1");
+            Mac hmacsha1 = Mac.getInstance("HmacSHA1","BC");
             SecretKeySpec chave = new SecretKeySpec(keyByteArray, "HmacSHA1");
 
             hmacsha1.init(chave);
@@ -68,7 +68,7 @@ public class TOTP {
     }
     // Recebe o intervalo de tempo e executa o algoritmo TOTP para produzir
     // o código TOTP. Usa os métodos auxiliares getTOTPCodeFromHash e HMAC_SHA1.
-    public String TOTPCode(long timeInterval) {
+    private String TOTPCode(long timeInterval) {
         long numIntervalos = timeInterval / 1000 / timeStepInSeconds;
 
         byte[] counter = null;
@@ -153,7 +153,7 @@ public class TOTP {
         return result;
     }
 
-    public static String HexCodeString(byte[] hexCode)
+    private static String HexCodeString(byte[] hexCode)
 	{
 		StringBuffer buf = new StringBuffer();
 

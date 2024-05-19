@@ -99,7 +99,7 @@ public class RestoreValidateSuite {
         arquivoDecriptografado = cipher.doFinal(ENCriptedArray);
 
         Arrays.fill(ENCriptedArray, (byte)0);
-        KAES.destroy();
+        if(!KAES.isDestroyed()){KAES.destroy();}
         } catch(BadPaddingException e) {
             System.err.println("Erro no uso do padding na decriptografia do envelope");
             System.exit(1);
@@ -174,9 +174,8 @@ public class RestoreValidateSuite {
         editKeydata = editKeydata.replaceAll("\\s","");
         Kprivate = editKeydata.getBytes();
 
-        KAES.destroy();
         Arrays.fill(keyArray,(byte)0);
-
+        if(!KAES.isDestroyed()){KAES.destroy();}
         } catch(NoSuchAlgorithmException e){
             System.err.println("Algoritmo de geração de chave simétrica não encontrado");
             System.exit(1);
@@ -300,7 +299,7 @@ public class RestoreValidateSuite {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, KAES);
         arquivoDecriptografado = cipher.doFinal(ENCriptedArray);
-        KAES.destroy();
+        if (!KAES.isDestroyed()){KAES.destroy();}
         } catch(BadPaddingException e) {
             System.err.println("Erro no uso do padding na decriptografia do envelope");
             System.exit(1);

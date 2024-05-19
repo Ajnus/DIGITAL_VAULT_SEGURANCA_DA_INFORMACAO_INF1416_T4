@@ -3,7 +3,6 @@ import java.io.File;
 import java.security.PublicKey;
 import java.security.PrivateKey;
 
-import java.util.Date;
 import java.lang.StringBuffer;
 
 public class TesteUnitarioProgram {
@@ -16,15 +15,10 @@ public class TesteUnitarioProgram {
 
         cobaia_auth = new TOTP(chaveCriptada, 30);
 
-        String teste = cobaia_auth.TOTPCode(new Date().getTime());
+        String teste = cobaia_auth.generateCode();
         System.out.println(teste);
-        //String codigo = cobaia_auth.generateCode();
-        //System.out.println("Codigo de autenticacao do teste: " + codigo);
 
         //cobaia_auth.validateCode(codigo);
-        //Scanner scan = new Scanner(System.in);
-        //System.out.println("Entre codigo de autenticacao da cobaia");
-        //String codigoTerceiro = scan.nextLine();
 
         //if (cobaia_auth.validateCode(codigoTerceiro)){
         //    System.out.println("TOTP funcionando como esperado");

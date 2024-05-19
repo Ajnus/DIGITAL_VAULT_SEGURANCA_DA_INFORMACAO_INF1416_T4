@@ -5,6 +5,10 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 import model.TOTP;
+import model.RestoreValidateSuite;
+import model.Base32;
+import model.Authentication;
+
 // -------------------------
 // Jam Ajna Soares - 2211689 
 // Olavo Lucas     - 1811181
@@ -13,12 +17,18 @@ import model.TOTP;
 public class AutenticationControler {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     //log(Level level, String msg, Object[] params)
-    public static boolean Authenticate(String nomeUsuario, String password){
+    public static boolean AuthenticateStep1(String nomeUsuario){
         boolean result = false;
 
-        //verifique nome de usuário
+        //verifique se nome de usuário está no banco
         {}
-        //verifique a senha
+
+        return result;
+    }
+    public static boolean AuthenticateStep2(String nomeUsuario, String senhaUsuario){
+        boolean result = false;
+
+        //verifique a senha do usuário
         {}
 
         return result;
@@ -35,15 +45,19 @@ public class AutenticationControler {
         boolean result = false;
         //verifique cada detalhe do cadastro separado no entra chaves abaixo
         {}
-        {}
-        {}
 
         return result;
     }
     public static boolean AuthenticateTOTP(String password){
         boolean result = false;
         //chame a classe TOTP para verificar a password recebida
-        {}
+        try{
+            TOTP checker = new TOTP(Base32.Alphabet.BASE32, 30);
+            result = checker.validateCode(password);
+        }catch(Exception e){
+            System.err.println("Erro na terceira etapa de aplicação");
+            return false;
+        }
 
         return result;
     }

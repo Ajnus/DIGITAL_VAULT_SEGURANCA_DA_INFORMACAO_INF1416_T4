@@ -17,6 +17,7 @@ public class ValidationControler {
 
         return result;
     }
+
     public static boolean getFile(String digitalEnvelope, String PrivateKey, String PublicKey){
         boolean result = false;
 
