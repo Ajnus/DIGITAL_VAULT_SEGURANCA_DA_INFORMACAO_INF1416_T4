@@ -56,10 +56,8 @@ public class Authentication {
         boolean result = false;
         try{
             File certificado = new File(EnderecoCert);
-            FileInputStream inputStream = new FileInputStream(certificado);
-            long tamCertificdo = certificado.length();
-            byte[] certificado_array = new byte[(int) tamCertificado];
-            X509Certificate certificadoX509 = X509Certificate.getInstance(certificado_array);
+            FileInputStream CertificadoinputStream = new FileInputStream(certificado);
+            X509Certificate certificadoX509 = X509Certificate.getInstance(CertificadoinputStream);
             certificadoX509.checkValidity();
         }catch(IOException e){
             System.err.println("Erro ao abrir certificado digital no endereço dado");

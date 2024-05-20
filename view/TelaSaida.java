@@ -80,12 +80,14 @@ public class TelaSaida {
 
         JButton EncerrarSessao = new JButton("Encerrar Sessão");
         EncerrarSessao.addActionListener(ActionEvent -> {
-
+            //SystemControler.destroyKey();
+            //SystemControler.Switch("TelaEntrada");
         });
 
         JButton EncerrarSistema = new JButton("Encerrar Sistema");
         EncerrarSistema.addActionListener(ActionEvent -> {
-
+            //SystemControler.destroyKey();
+            //SystemControler.ShutDown();
         });
 
         JButton Voltar = new JButton("Voltar");

@@ -9,6 +9,8 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+import javax.crypto.SecretKey;
+
 import model.Sistema;
 import view.TelaListarAcesso;
 import view.TelaPrincipal;
@@ -27,6 +29,7 @@ import javax.swing.JFrame;
 
 public class SystemControler {
     private static final Sistema sistema = Sistema.getInstance();
+    private static SystemControler controle;
     private static JFrame telaAtual;
 
     private static TelaPrincipal principalTela;
@@ -37,8 +40,21 @@ public class SystemControler {
     private static TelaSaida saidaTela;
     private static TelaSenha senhaTela;
 
-    protected static SystemControler Start(){
-        return new SystemControler(true);
+    private static SecretKey chaveAcessoUsuario;
+    private static String nomeUsuario;
+
+    public void setKey(SecretKey chave){chaveAcessoUsuario=chave;}
+    public void setNome(String nome){nomeUsuario=nome;}
+    protected static String getNome(){return nomeUsuario;}
+
+    public static SystemControler Start(){
+        if(controle==null){controle = new SystemControler(true);}
+        return controle;
+    }
+
+    public static void dropSession(){
+        chaveAcessoUsuario=null;
+        Switch("TelaEntrada");
     }
 
     private SystemControler(boolean primeira){

@@ -22,6 +22,8 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import controler.SystemControler;
+import controler.AutenticationControler;
 
 public class TelaSenha {
     private static TelaSenha janela;
@@ -90,14 +92,22 @@ public class TelaSenha {
         CONFIRMAR.addActionListener(ActionEvent -> {
             String[] possibilidades = new String[6];
             sequencia.toArray(possibilidades);
-            //boolean Check = autenticador.autenticatePassword(possibilidades);
-            for(String item :sequencia){item = "";}
+            boolean Check = AutenticationControler.AuthenticateStep2(possibilidades);
+
+            if (Check){
+
+            }
+            else{
+
+            }
+
+            Collections.fill(sequencia, "");
             sequencia.clear();
             reRoll();
         });
         JButton LIMPAR = new JButton("LIMPAR");
         LIMPAR.addActionListener(ActionEvent -> {
-            for(String item :sequencia){item = "";}
+            Collections.fill(sequencia, "");
             sequencia.clear();
             reRoll();
         });

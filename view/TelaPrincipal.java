@@ -90,7 +90,7 @@ public class TelaPrincipal {
         cabecalho.add(grupoNome);
         cabecalho.add(email);        
         */
-        
+
         //adiciona elemento <<total de acesso do  usuário>> da estatistica
         numAcesso = new JLabel("Numero de acessos: ");
 

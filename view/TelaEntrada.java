@@ -16,11 +16,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import controler.SystemControler;
+import controler.AutenticationControler;
 
 public class TelaEntrada {
     private static TelaEntrada janela;
     private static SystemControler comunicador;
     private static JFrame tela;
+    private static JTextField campoNome;
 
     public static TelaEntrada getJanela(){
         if(janela==null){janela = new TelaEntrada();}
@@ -40,21 +42,30 @@ public class TelaEntrada {
         painel.setLayout(new BoxLayout(painel, BoxLayout.Y_AXIS));
         {
         JLabel loginText = new JLabel("login name:");
-        JTextField nomeUsuarioCampo = new JTextField(256);
+        campoNome = new JTextField(256);
         JPanel linha1 = new JPanel();
         linha1.setLayout(new BoxLayout(linha1, BoxLayout.X_AXIS));
-        linha1.add(loginText);linha1.add(nomeUsuarioCampo);
+        linha1.add(loginText);linha1.add(campoNome);
         painel.add(linha1);
         }
 
         {
         JButton ok = new JButton("OK");
         ok.addActionListener(ActionEvent -> {
-        
+            //verifica se o nome existe na tabela usuario
+            //caso positivo troca para telaSenha
+            //caso negativo: apaga o campo e notifica o usuario
+            boolean result = AutenticationControler.AuthenticateStep1(campoNome.getText());
+            if (result){
+                SystemControler.Switch("TelaSenha");
+            }
+            else{
+                campoNome.setText("");
+            }
         });
         JButton limpar = new JButton("LIMPAR");
         limpar.addActionListener(ActionEvent -> {
-        
+            TelaEntrada.campoNome.setText("");
         });
         JPanel linha2 = new JPanel();
         linha2.setLayout(new BoxLayout(linha2, BoxLayout.X_AXIS));

@@ -12,12 +12,23 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import controler.AutenticationControler;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.KeyAdapter;
+
+
+import controler.SystemControler;
+import controler.AutenticationControler;
 
 public class TelaTOTP {
     private static TelaTOTP janela;
     private static JFrame tela;
+
+    private static JTextField campoCodigo;
 
     private static int tentativas = 0;
     private final int tentativasMax = 3;
@@ -46,19 +57,41 @@ public class TelaTOTP {
 
         {
         JLabel TOTP = new JLabel("TOTP:");
-        JTextField codigoCampo = new JTextField(10);
+        campoCodigo = new JTextField(10);
+        campoCodigo.addKeyListener(new KeyAdapter() {public void keyTyped(KeyEvent e) {
+            char c = e.getKeyChar();
+            if ( ((c < '0') || (c > '9')) && (c != KeyEvent.VK_BACK_SPACE)) {
+                e.consume();
+            }
+        };});
         linha1.add(TOTP);
-        linha1.add(codigoCampo);
+        linha1.add(campoCodigo);
         }
 
         {
         JButton OK = new JButton("OK");
         OK.addActionListener(ActionEvent -> {
-
+            //validao o codigo TOTP
+            //positivo vai para a Tela principal
+            //negativo limpa o campo e notifica o usuario, aumenta um no contador
+            //caso o contador chegue no numero no tentativasMax, bloquei o usuario com aquele nome por 2 minutos
+            boolean result = AutenticationControler.AuthenticateTOTP(campoCodigo.getText());
+            if (result){
+                SystemControler.Switch("TelaPrincipal");
+                tentativas = 0;
+            }
+            else{
+                tentativas++;
+                if (tentativas >= tentativasMax){
+                    tentativas = 0;
+                    //bloqueia usuario por 2 minutos
+                }
+            }
+            campoCodigo.setText("");
         });
         JButton LIMPAR = new JButton("LIMPAR");
         LIMPAR.addActionListener(ActionEvent -> {
-
+            campoCodigo.setText("");
         });
         linha2.add(OK);
         linha2.add(LIMPAR);

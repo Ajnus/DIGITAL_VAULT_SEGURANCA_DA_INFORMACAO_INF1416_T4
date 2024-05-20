@@ -25,9 +25,9 @@ public class AutenticationControler {
 
         return result;
     }
-    public static boolean AuthenticateStep2(String nomeUsuario, String senhaUsuario){
+    public static boolean AuthenticateStep2(String[] possibilidades){
         boolean result = false;
-
+        String nomeUsuario = SystemControler.getNome();
         //verifique a senha do usuário
         {}
 

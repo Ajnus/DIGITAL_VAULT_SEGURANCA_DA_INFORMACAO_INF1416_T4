@@ -3,6 +3,8 @@
 // Olavo Lucas     - 1811181
 // -------------------------
 
+import controler.SystemControler;
+
 import view.TelaRegistro;
 import view.TelaSaida;
 import view.TelaSenha;
@@ -14,6 +16,6 @@ import view.TelaPrincipal;
 
 public class TesteTelas {
     public static void main(String[] args){
-        TelaPrincipal teste = TelaPrincipal.getJanela();
+        TelaTOTP teste = TelaTOTP.getJanela();
     }
 }
