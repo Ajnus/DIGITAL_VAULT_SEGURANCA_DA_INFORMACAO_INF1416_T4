@@ -16,6 +16,6 @@ import view.TelaPrincipal;
 
 public class TesteTelas {
     public static void main(String[] args){
-        TelaTOTP teste = TelaTOTP.getJanela();
+        SystemControler teste = SystemControler.Start();
     }
 }

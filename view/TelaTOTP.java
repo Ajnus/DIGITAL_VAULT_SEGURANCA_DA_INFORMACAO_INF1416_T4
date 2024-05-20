@@ -46,7 +46,7 @@ public class TelaTOTP {
     }
 
     private TelaTOTP(){
-        JFrame tela = new JFrame("Codigo Digital - Autenticação");
+        tela = new JFrame("Codigo Digital - Autenticação");
         JPanel painel = new JPanel();
         painel.setLayout(new BoxLayout(painel, BoxLayout.Y_AXIS));
 
