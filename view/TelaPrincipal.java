@@ -82,9 +82,9 @@ public class TelaPrincipal {
 
         {
         //adicionar elementos do cabecalho
-        usuarioNome = new JLabel("Usuario: ");
+        email = new JLabel("Login: ");
         grupoNome = new JLabel("Grupo: ");
-        email = new JLabel("Email: ");
+        usuarioNome = new JLabel("Nome: ");
         /*
         cabecalho.add(usuarioNome);
         cabecalho.add(grupoNome);
@@ -96,21 +96,25 @@ public class TelaPrincipal {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        painel.add(usuarioNome, gbc);
+        painel.add(email, gbc);
 
         gbc.gridy++;
         painel.add(grupoNome, gbc);
 
         gbc.gridy++;
-        painel.add(email, gbc);
+        painel.add(usuarioNome, gbc);
 
         gbc.gridy++;
+        gbc.insets = new Insets(20, 5, 20, 5);
         painel.add(numAcesso, gbc);
 
         //estatistica.add(numAcesso);
         }
 
         {
+        //gbc.gridy++;
+        gbc.insets = new Insets(5, 5, 5, 5); // Resetar para espaçamento padrão
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         JButton cadastro = new JButton("Cadastrar Usuário");
         cadastro.addActionListener(ActionEvent -> {
             tela.setVisible(false);
