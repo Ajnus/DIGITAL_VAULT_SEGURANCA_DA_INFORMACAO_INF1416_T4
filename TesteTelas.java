@@ -1,3 +1,8 @@
+// -------------------------
+// Jam Ajna Soares - 2211689 
+// Olavo Lucas     - 1811181
+// -------------------------
+
 import view.TelaRegistro;
 import view.TelaSaida;
 import view.TelaSenha;

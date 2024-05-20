@@ -1,3 +1,7 @@
+// -------------------------
+// Jam Ajna Soares - 2211689 
+// Olavo Lucas     - 1811181
+// -------------------------
 
 import java.io.File;
 import java.security.PublicKey;

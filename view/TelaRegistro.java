@@ -1,3 +1,8 @@
+// -------------------------
+// Jam Ajna Soares - 2211689 
+// Olavo Lucas     - 1811181
+// -------------------------
+
 package view;
 
 import javax.swing.BoxLayout;
@@ -8,10 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 
-// -------------------------
-// Jam Ajna Soares - 2211689
-// Olavo Lucas     - 1811181
-// -------------------------
 
 public class TelaRegistro {
   private static final TelaRegistro janela = new TelaRegistro();

@@ -1,3 +1,8 @@
+// -------------------------
+// Jam Ajna Soares - 2211689 
+// Olavo Lucas     - 1811181
+// -------------------------
+
 package controler;
 
 import java.util.logging.LogManager;
@@ -8,11 +13,6 @@ import model.TOTP;
 import model.RestoreValidateSuite;
 import model.Base32;
 import model.Authentication;
-
-// -------------------------
-// Jam Ajna Soares - 2211689 
-// Olavo Lucas     - 1811181
-// -------------------------
 
 public class AutenticationControler {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);

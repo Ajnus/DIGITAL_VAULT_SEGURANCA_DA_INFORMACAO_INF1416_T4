@@ -1,3 +1,8 @@
+// -------------------------
+// Jam Ajna Soares - 2211689 
+// Olavo Lucas     - 1811181
+// -------------------------
+
 package model;
 import java.io.*;
 /**

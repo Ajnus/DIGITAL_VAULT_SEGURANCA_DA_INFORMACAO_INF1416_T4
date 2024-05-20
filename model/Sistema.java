@@ -1,13 +1,14 @@
+// -------------------------
+// Jam Ajna Soares - 2211689 
+// Olavo Lucas     - 1811181
+// -------------------------
+
 package model;
 
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-// -------------------------
-// Jam Ajna Soares - 2211689 
-// Olavo Lucas     - 1811181
-// -------------------------
 
 public class Sistema {
     private static Sistema sistema;

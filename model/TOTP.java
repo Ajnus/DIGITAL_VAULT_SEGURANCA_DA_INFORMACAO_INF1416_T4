@@ -1,3 +1,8 @@
+// -------------------------
+// Jam Ajna Soares - 2211689 
+// Olavo Lucas     - 1811181
+// -------------------------
+
 package model;
 
 import javax.crypto.Mac;
@@ -7,10 +12,7 @@ import java.util.Date;
 import java.nio.ByteOrder;
 import java.security.Security;
 import java.security.Provider;
-// -------------------------
-// Jam Ajna Soares - 2211689 
-// Olavo Lucas     - 1811181
-// -------------------------
+ 
 
 public class TOTP {
     private byte [] key = null;

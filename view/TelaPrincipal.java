@@ -1,3 +1,8 @@
+// -------------------------
+// Jam Ajna Soares - 2211689 
+// Olavo Lucas     - 1811181
+// -------------------------
+
 package view;
 
 import javax.swing.BoxLayout;
@@ -6,15 +11,10 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import javafx.event.ActionEvent;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import controler.SystemControler;
-
-// -------------------------
-// Jam Ajna Soares - 2211689 
-// Olavo Lucas     - 1811181
-// -------------------------
 
 
 public class TelaPrincipal{
