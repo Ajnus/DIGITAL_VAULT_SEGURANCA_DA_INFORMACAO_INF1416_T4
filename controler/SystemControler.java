@@ -37,19 +37,25 @@ public class SystemControler {
     private static TelaSaida saida;
     private static TelaSenha senha;
 
-    public SystemControler(boolean primeira){
+    private SystemControler(boolean primeira){
         principal = TelaPrincipal.getJanela();
         principal.getTela().setVisible(false);
+
         cadastro = TelaRegistro.getJanela();
         cadastro.chama(primeira);cadastro.getTela().setVisible(false);
+
         TOTP = TelaTOTP.getJanela();
         TOTP.getTela().setVisible(false);
+
         consulta = TelaListarAcesso.getJanela();
         consulta.getTela().setVisible(false);
+
         entrada = TelaEntrada.getJanela();
         entrada.getTela().setVisible(false);
+
         senha = TelaSenha.getJanela();
         senha.getTela().setVisible(false);
+
         saida = TelaSaida.getJanela();
         saida.getTela().setVisible(false);
 
@@ -90,6 +96,9 @@ public class SystemControler {
                 break;
             case "TelaTOTP":
                 telaAtual = TOTP.getTela();
+                break;
+            case "TelaCadastro":
+                telaAtual = cadastro.getTela();
                 break;
             default:
                 break;

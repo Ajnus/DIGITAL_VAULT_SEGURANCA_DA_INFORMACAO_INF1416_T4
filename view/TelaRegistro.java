@@ -11,6 +11,12 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import controler.SystemControler;
+
 import javax.swing.JComboBox;
 
 
@@ -146,7 +152,15 @@ public class TelaRegistro {
 
     {
     JButton ok = new JButton("ok");
+    ok.addActionListener(ActionEvent -> {
+
+    });
+
     JButton volta = new JButton("voltar");
+    volta.addActionListener(ActionEvent -> {
+
+    });
+
     JPanel bottomButtonsComponent = new JPanel();
     bottomButtonsComponent.setLayout(new BoxLayout(bottomButtonsComponent, BoxLayout.X_AXIS));
 

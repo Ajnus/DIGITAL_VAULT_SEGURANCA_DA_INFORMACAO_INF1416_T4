@@ -11,6 +11,11 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import controler.SystemControler;
+
 
 public class TelaSaida {
 
@@ -63,10 +68,19 @@ public class TelaSaida {
         JLabel mensagem = new JLabel("Pressione o botão Encerrar Sessão ou o botão\r\nEncerrar Sistema para confirmar.");
 
         JButton EncerrarSessao = new JButton("Encerrar Sessão");
+        //EncerrarSessao.addActionListener(ActionEvent -> {
+        //
+        //});
 
         JButton EncerrarSistema = new JButton("Encerrar Sistema");
+        //EncerrarSistema.addActionListener(ActionEvent -> {
+        //
+        //});
 
         JButton Voltar = new JButton("Voltar");
+        Voltar.addActionListener(ActionEvent -> {
+            SystemControler.Switch("TelaPrincipal");
+        });
 
         JPanel linha1 = new JPanel();
         linha1.setLayout(new BoxLayout(linha1, BoxLayout.X_AXIS));

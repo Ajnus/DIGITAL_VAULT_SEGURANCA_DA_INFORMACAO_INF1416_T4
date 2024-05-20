@@ -12,16 +12,29 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import controler.SystemControler;
+
 import javax.swing.JTable;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class TelaListarAcesso {
     private static final TelaListarAcesso janela = new TelaListarAcesso();
     private static JFrame tela;
-    private static int tentativas;
+
+    private static JLabel usuarioNome;
+    private static JLabel grupoNome;
+    private static JLabel email;
+    private static JLabel numAcesso;
 
     public static TelaListarAcesso getJanela(){return janela;}
     public JFrame getTela(){return tela;}
+    public void setUsuario(String nome){usuarioNome.setText("Usuario: " + nome);}
+    public void setGrupo(String nome){grupoNome.setText("Grupo: " + nome);}
+    public void setEmail(String nome){email.setText("email: "+ nome);}
+    public void setAcessos(int qtd){numAcesso.setText("Numero de acessos: "+ qtd);}
 
     private TelaListarAcesso(){
         tela = new JFrame();
@@ -36,16 +49,18 @@ public class TelaListarAcesso {
         JTable listaArquivo;
 
         {
-        //adiciona componentes do cabeçalho
-        //JPanel usuario
-        //Jpanel Grupo
-        //JPanel email
-        }
+            //adicionar elementos do cabecalho
+            usuarioNome = new JLabel("Usuario: ");
+            grupoNome = new JLabel("Grupo: ");
+            email = new JLabel("Email: ");
+            cabecalho.add(usuarioNome);
+            cabecalho.add(grupoNome);
+            cabecalho.add(email);
 
-        {
-        //adiciona componente <<Total de acessos do usuário>> do estatistica
-        //JPanel numeroAcesso
-        }
+            //adiciona elemento <<total de acesso do  usuário>> da estatistica
+            numAcesso = new JLabel("Numero de acessos: ");
+            estatistica.add(numAcesso);
+            }
 
         {
         JLabel pastaEndereco = new JLabel("caminho da pasta:");
@@ -61,10 +76,16 @@ public class TelaListarAcesso {
         frase.add(FraseSecreta); frase.add(CampoFrase);
 
         JButton Listar = new JButton("Listar");
+//        Listar.addActionListener(ActionEvent -> {
+//
+//        });
 
         listaArquivo = new JTable();
 
         JButton Voltar = new JButton("Voltar");
+        Voltar.addActionListener(ActionEvent -> {
+            SystemControler.Switch("TelaPrincipal");
+        });
 
         corpo.add(pasta);
         corpo.add(frase);

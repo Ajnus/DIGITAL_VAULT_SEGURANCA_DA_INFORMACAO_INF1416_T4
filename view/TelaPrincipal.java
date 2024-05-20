@@ -1,8 +1,3 @@
-// -------------------------
-// Jam Ajna Soares - 2211689 
-// Olavo Lucas     - 1811181
-// -------------------------
-
 package view;
 
 import javax.swing.BoxLayout;
@@ -16,11 +11,15 @@ import java.awt.event.ActionListener;
 
 import controler.SystemControler;
 
+// -------------------------
+// Jam Ajna Soares - 2211689 
+// Olavo Lucas     - 1811181
+// -------------------------
+
 
 public class TelaPrincipal{
     private static final TelaPrincipal janela = new TelaPrincipal();
     private static JFrame tela;
-    private static SystemControler comunicador;
 
     private static JLabel usuarioNome;
     private static JLabel grupoNome;
@@ -36,6 +35,8 @@ public class TelaPrincipal{
 
     private TelaPrincipal(){
         tela = new JFrame("Tela Principal");
+        JPanel painel = new JPanel();
+        painel.setLayout(new BoxLayout(painel, BoxLayout.Y_AXIS));
         JPanel cabecalho = new JPanel();
         cabecalho.setLayout(new BoxLayout(cabecalho, BoxLayout.Y_AXIS));
         JPanel estatistica = new JPanel();
@@ -59,33 +60,28 @@ public class TelaPrincipal{
 
         {
         JButton cadastro = new JButton("cadastrar usuário");
-        //cadastro.addActionListener(new ActionListener() { 
-        //    public void actionPerformed(ActionEvent e) { 
-        //        comunicador.switch("TelaRegistro");
-        //    }
-        //});
+        cadastro.addActionListener(ActionEvent -> {
+            SystemControler.Switch("TelaCadastro");
+        });
 
         JButton consultar = new JButton("consultar arquivos");
-        //consultar.addActionListener(new ActionListener() { 
-        //    public void actionPerformed(ActionEvent e) { 
-        //        comunicador.switch("TelaConsulta");
-        //    }
-        //});
+        consultar.addActionListener(ActionEvent -> {
+            SystemControler.Switch("TelaListarAcesso");
+        });
 
         JButton sair = new JButton("sair");
-        //sair.addActionListener(new ActionListener() { 
-        //    public void actionPerformed(ActionEvent e) { 
-        //        comunicador.switch("TelaSaida");
-        //    }
-        //});
+        sair.addActionListener(ActionEvent -> {
+            SystemControler.Switch("TelaSaida");
+        });
         corpo.add(cadastro);
         corpo.add(consultar);
         corpo.add(sair);
         }
 
-        tela.add(cabecalho);
-        tela.add(estatistica);
-        tela.add(corpo);
+        painel.add(cabecalho);
+        painel.add(estatistica);
+        painel.add(corpo);
+        tela.add(painel);
         tela.setSize(200, 300);
         tela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tela.setVisible(true);
