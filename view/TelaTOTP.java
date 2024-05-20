@@ -30,6 +30,9 @@ public class TelaTOTP {
         if(tela==null){janela = new TelaTOTP();}
         return tela;
     }
+    public void setVisibility(boolean onOff){
+        tela.setVisible(onOff);
+    }
 
     private TelaTOTP(){
         JFrame tela = new JFrame("Codigo Digital - Autenticação");

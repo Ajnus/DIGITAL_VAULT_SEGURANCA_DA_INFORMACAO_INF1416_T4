@@ -30,6 +30,9 @@ public class TelaEntrada {
         if(tela==null){janela = new TelaEntrada();}
         return tela;
     }
+    public void setVisibility(boolean onOff){
+        tela.setVisible(onOff);
+    }
 
     private TelaEntrada(){
         tela = new JFrame("Cofre Digital - Autenticação");

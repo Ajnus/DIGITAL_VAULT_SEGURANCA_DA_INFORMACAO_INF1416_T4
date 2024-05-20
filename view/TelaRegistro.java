@@ -41,6 +41,10 @@ public class TelaRegistro {
     grupoComboBox.setEnabled(!firstTime);
   }
 
+  public void setVisibility(boolean onOff){
+    tela.setVisible(onOff);
+  }
+
   public static TelaRegistro getJanela(){
     if(janela==null){janela = new TelaRegistro();}
     return janela;

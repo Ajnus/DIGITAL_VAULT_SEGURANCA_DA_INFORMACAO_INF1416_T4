@@ -29,46 +29,46 @@ public class SystemControler {
     private static final Sistema sistema = Sistema.getInstance();
     private static JFrame telaAtual;
 
-    private static TelaPrincipal principal;
-    private static TelaRegistro cadastro;
-    private static TelaTOTP TOTP;
-    private static TelaListarAcesso consulta;
-    private static TelaEntrada entrada;
-    private static TelaSaida saida;
-    private static TelaSenha senha;
+    private static TelaPrincipal principalTela;
+    private static TelaRegistro cadastroTela;
+    private static TelaTOTP TOTPTela;
+    private static TelaListarAcesso consultaTela;
+    private static TelaEntrada entradaTela;
+    private static TelaSaida saidaTela;
+    private static TelaSenha senhaTela;
 
-    public static SystemControler Start(){
+    protected static SystemControler Start(){
         return new SystemControler(true);
     }
 
     private SystemControler(boolean primeira){
-        principal = TelaPrincipal.getJanela();
-        principal.getTela().setVisible(false);
+        principalTela = TelaPrincipal.getJanela();
+        principalTela.setVisibility(false);
 
-        cadastro = TelaRegistro.getJanela();
-        cadastro.set(primeira);
-        cadastro.getTela().setVisible(false);
+        cadastroTela = TelaRegistro.getJanela();
+        cadastroTela.set(primeira);
+        cadastroTela.setVisibility(false);
 
-        TOTP = TelaTOTP.getJanela();
-        TOTP.getTela().setVisible(false);
+        TOTPTela = TelaTOTP.getJanela();
+        TOTPTela.setVisibility(false);
 
-        consulta = TelaListarAcesso.getJanela();
-        consulta.getTela().setVisible(false);
+        consultaTela = TelaListarAcesso.getJanela();
+        consultaTela.setVisibility(false);
 
-        entrada = TelaEntrada.getJanela();
-        entrada.getTela().setVisible(false);
+        entradaTela = TelaEntrada.getJanela();
+        entradaTela.setVisibility(false);
 
-        senha = TelaSenha.getJanela();
-        senha.getTela().setVisible(false);
+        senhaTela = TelaSenha.getJanela();
+        senhaTela.setVisibility(false);
 
-        saida = TelaSaida.getJanela();
-        saida.getTela().setVisible(false);
+        saidaTela = TelaSaida.getJanela();
+        saidaTela.setVisibility(false);
 
         if (primeira){
-            telaAtual = cadastro.getTela();
+            telaAtual = cadastroTela.getTela();
             telaAtual.setVisible(true);
         }else{
-            telaAtual = entrada.getTela();
+            telaAtual = entradaTela.getTela();
             telaAtual.setVisible(true);
         }
     }
@@ -76,31 +76,33 @@ public class SystemControler {
     public static Logger getSistemaLogger(){return sistema.log;}
 
     public static void Switch(String tela){
+        if (telaAtual == null){SystemControler.Start();}
         switch(tela){
             case "TelaListarAcesso":
-                telaAtual = consulta.getTela();
+                telaAtual = consultaTela.getTela();
                 break;
             case "TelaPrincipal":
-                telaAtual = principal.getTela();
+                if (principalTela == null){System.out.println("PROBLEMA COLOSSAL");}
+                telaAtual = principalTela.getTela();
                 break;
             case "TelaRegistro":
-                cadastro.set(false);
-                telaAtual = cadastro.getTela();
+                cadastroTela.set(false);
+                telaAtual = cadastroTela.getTela();
                 break;
             case "TelaEntrada":
-                telaAtual = entrada.getTela();
+                telaAtual = entradaTela.getTela();
                 break;
             case "TelaSaida":
-                telaAtual = saida.getTela();
+                telaAtual = saidaTela.getTela();
                 break;
             case "TelaSenha":
-                telaAtual = senha.getTela();
+                telaAtual = senhaTela.getTela();
                 break;
             case "TelaTOTP":
-                telaAtual = TOTP.getTela();
+                telaAtual = TOTPTela.getTela();
                 break;
             case "TelaCadastro":
-                telaAtual = cadastro.getTela();
+                telaAtual = cadastroTela.getTela();
                 break;
             default:
                 break;

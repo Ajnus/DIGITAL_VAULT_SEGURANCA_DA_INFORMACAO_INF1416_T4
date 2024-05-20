@@ -16,6 +16,6 @@ import controler.SystemControler;
 
 public class TesteTelas {
     public static void main(String[] args){
-        TelaListarAcesso teste = TelaListarAcesso.getJanela();
+        TelaRegistro teste = new TelaRegistro.getJanela();
     }
 }

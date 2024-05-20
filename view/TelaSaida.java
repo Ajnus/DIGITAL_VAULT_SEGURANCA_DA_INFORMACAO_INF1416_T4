@@ -19,7 +19,7 @@ import controler.SystemControler;
 
 public class TelaSaida {
 
-    private static final TelaSaida janela = new TelaSaida();
+    private static TelaSaida janela;
     private static JFrame tela;
 
     private static JLabel usuarioNome;
@@ -27,9 +27,20 @@ public class TelaSaida {
     private static JLabel email;
     private static JLabel numAcesso;
 
+    public void setVisibility(boolean onOff){
+        tela.setVisible(onOff);
+    }
 
-    public static TelaSaida getJanela(){return janela;}
-    public JFrame getTela(){return tela;}
+    public static TelaSaida getJanela(){
+        if(janela==null){janela = new TelaSaida();}
+        return janela;
+    }
+
+    public JFrame getTela(){
+        if(tela==null){janela = new TelaSaida();}
+        return tela;
+    }
+
     public void setUsuario(String nome){usuarioNome.setText("Usuario: " + nome);}
     public void setGrupo(String nome){grupoNome.setText("Grupo: " + nome);}
     public void setEmail(String nome){email.setText("email: "+ nome);}

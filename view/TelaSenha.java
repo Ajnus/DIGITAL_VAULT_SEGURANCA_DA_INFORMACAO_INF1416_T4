@@ -37,6 +37,9 @@ public class TelaSenha {
         if (tela==null){janela = new TelaSenha();}
         return tela;
     }
+    public void setVisibility(boolean onOff){
+        tela.setVisible(onOff);
+    }
 
     private void reRoll(){
         ArrayList<String> algarismos = new ArrayList<String>(Arrays.asList("0","1","2","3","4","5","6","7","8","9"));

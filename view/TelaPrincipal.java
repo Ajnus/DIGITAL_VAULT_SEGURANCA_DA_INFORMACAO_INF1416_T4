@@ -34,6 +34,10 @@ public class TelaPrincipal{
         if(tela==null){janela = new TelaPrincipal();}
         return TelaPrincipal.tela;
     }
+    public void setVisibility(boolean onOff){
+        tela.setVisible(onOff);
+    }
+
     public void setUsuario(String nome){usuarioNome.setText("Usuario: " + nome);}
     public void setGrupo(String nome){grupoNome.setText("Grupo: " + nome);}
     public void setEmail(String nome){email.setText("email: "+ nome);}
