@@ -1,42 +1,40 @@
--- Create the Usuarios table with additional columns
 CREATE TABLE Usuarios (
-    UID INTEGER PRIMARY KEY AUTOINCREMENT, -- Unique user ID
-    Nome TEXT NOT NULL,
-    Email TEXT NOT NULL UNIQUE,
-    Senha TEXT NOT NULL, -- Stored password
-    NumeroDeAcessos INTEGER DEFAULT 0, -- Number of accesses
-    NumeroDeConsultas INTEGER DEFAULT 0 -- Number of queries
+    UID INTEGER PRIMARY KEY AUTOINCREMENT,
+    login_name TEXT NOT NULL UNIQUE, -- EMAIL
+    GID INTEGER,
+    nome TEXT NOT NULL,
+    senha TEXT NOT NULL,
+    numero_acessos INTEGER DEFAULT 0,
+    numero_consultas INTEGER DEFAULT 0,
+    FOREIGN KEY (GID) REFERENCES Grupos(GID)
 );
 
--- Create the Chaveiro table
 CREATE TABLE Chaveiro (
-    KID INTEGER PRIMARY KEY AUTOINCREMENT, -- Unique key ID
-    UID INTEGER NOT NULL, -- Reference to the Usuarios table
-    CertificadoDigital BLOB NOT NULL, -- Digital certificate
-    ChavePrivada BLOB NOT NULL, -- Private key
+    KID INTEGER PRIMARY KEY AUTOINCREMENT,
+    UID INTEGER NOT NULL,
+    certificado_digital BLOB NOT NULL,
+    chave_privada BLOB NOT NULL,
     FOREIGN KEY (UID) REFERENCES Usuarios (UID)
 );
 
--- Create the Grupos table
 CREATE TABLE Grupos (
-    GID INTEGER PRIMARY KEY AUTOINCREMENT, -- Unique group ID
-    Nome TEXT NOT NULL
+    GID INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL
 );
 
--- Create the Mensagens table
+
 CREATE TABLE Mensagens (
-    MID INTEGER PRIMARY KEY AUTOINCREMENT, -- Unique message ID
-    Conteudo TEXT NOT NULL
-    --DataEnvio TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+    MID INTEGER PRIMARY KEY AUTOINCREMENT,
+    conteudo TEXT NOT NULL
 );
 
--- Create the Registros table
+
 CREATE TABLE Registros (
-    RID INTEGER PRIMARY KEY AUTOINCREMENT, -- Unique record ID
-    UID INTEGER, -- Reference to the Usuarios table
-    MID INTEGER NOT NULL, -- Reference to the Mensagens table
-    DataHora TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- Record date and time
-    Descricao TEXT,
+    RID INTEGER PRIMARY KEY AUTOINCREMENT,
+    UID INTEGER,
+    MID INTEGER NOT NULL,
+    data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    descricao TEXT,
     FOREIGN KEY (UID) REFERENCES Usuarios (UID),
     FOREIGN KEY (MID) REFERENCES Mensagens (MID)
 );
