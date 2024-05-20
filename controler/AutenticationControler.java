@@ -16,13 +16,19 @@ import model.Authentication;
 
 public class AutenticationControler {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    //log(Level level, String msg, Object[] params)
+    //
     public static boolean AuthenticateStep1(String nomeUsuario){
         boolean result = false;
 
         //verifique se nome de usuário está no banco
         {}
 
+        if (result){
+            
+        }
+        else{
+            
+        }
         return result;
     }
     public static boolean AuthenticateStep2(String[] possibilidades){

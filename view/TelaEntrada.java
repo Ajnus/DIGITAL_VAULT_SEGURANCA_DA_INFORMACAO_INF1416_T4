@@ -60,8 +60,9 @@ public class TelaEntrada {
                 SystemControler.Switch("TelaSenha");
             }
             else{
-                campoNome.setText("");
+                
             }
+            campoNome.setText("");
         });
         JButton limpar = new JButton("LIMPAR");
         limpar.addActionListener(ActionEvent -> {
