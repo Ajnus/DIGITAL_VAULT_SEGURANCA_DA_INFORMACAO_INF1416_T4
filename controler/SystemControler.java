@@ -37,12 +37,17 @@ public class SystemControler {
     private static TelaSaida saida;
     private static TelaSenha senha;
 
+    public static SystemControler Start(){
+        return new SystemControler(true);
+    }
+
     private SystemControler(boolean primeira){
         principal = TelaPrincipal.getJanela();
         principal.getTela().setVisible(false);
 
         cadastro = TelaRegistro.getJanela();
-        cadastro.chama(primeira);cadastro.getTela().setVisible(false);
+        cadastro.set(primeira);
+        cadastro.getTela().setVisible(false);
 
         TOTP = TelaTOTP.getJanela();
         TOTP.getTela().setVisible(false);
@@ -61,17 +66,16 @@ public class SystemControler {
 
         if (primeira){
             telaAtual = cadastro.getTela();
-            cadastro.getTela().setVisible(true);
+            telaAtual.setVisible(true);
         }else{
-            telaAtual = cadastro.getTela();
-            cadastro.getTela().setVisible(true);
+            telaAtual = entrada.getTela();
+            telaAtual.setVisible(true);
         }
     }
     private static void TurnOff(){sistema.shutDown();}
     public static Logger getSistemaLogger(){return sistema.log;}
 
     public static void Switch(String tela){
-        telaAtual.setVisible(false);
         switch(tela){
             case "TelaListarAcesso":
                 telaAtual = consulta.getTela();
@@ -80,10 +84,8 @@ public class SystemControler {
                 telaAtual = principal.getTela();
                 break;
             case "TelaRegistro":
-                telaAtual = cadastro.chama(false).getTela();
-                break;
-            case "TelaRegistroInicio":
-                telaAtual = cadastro.chama(true).getTela();
+                cadastro.set(false);
+                telaAtual = cadastro.getTela();
                 break;
             case "TelaEntrada":
                 telaAtual = entrada.getTela();

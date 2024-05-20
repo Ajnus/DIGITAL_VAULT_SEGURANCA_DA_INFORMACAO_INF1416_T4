@@ -18,12 +18,18 @@ import java.awt.event.ActionListener;
 import controler.SystemControler;
 
 public class TelaEntrada {
-    private static final TelaEntrada janela = new TelaEntrada();
+    private static TelaEntrada janela;
     private static SystemControler comunicador;
     private static JFrame tela;
 
-    public static TelaEntrada getJanela(){return janela;}
-    public JFrame getTela(){return tela;}
+    public static TelaEntrada getJanela(){
+        if(janela==null){janela = new TelaEntrada();}
+        return janela;
+    }
+    public JFrame getTela(){
+        if(tela==null){janela = new TelaEntrada();}
+        return tela;
+    }
 
     private TelaEntrada(){
         tela = new JFrame("Cofre Digital - Autenticação");
@@ -37,10 +43,16 @@ public class TelaEntrada {
         linha1.add(loginText);linha1.add(nomeUsuarioCampo);
         painel.add(linha1);
         }
-        
+
         {
         JButton ok = new JButton("OK");
+        ok.addActionListener(ActionEvent -> {
+        
+        });
         JButton limpar = new JButton("LIMPAR");
+        limpar.addActionListener(ActionEvent -> {
+        
+        });
         JPanel linha2 = new JPanel();
         linha2.setLayout(new BoxLayout(linha2, BoxLayout.X_AXIS));
         linha2.add(ok);linha2.add(limpar);

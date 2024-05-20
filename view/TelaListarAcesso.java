@@ -21,7 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class TelaListarAcesso {
-    private static final TelaListarAcesso janela = new TelaListarAcesso();
+    private static TelaListarAcesso janela;
     private static JFrame tela;
 
     private static JLabel usuarioNome;
@@ -29,8 +29,16 @@ public class TelaListarAcesso {
     private static JLabel email;
     private static JLabel numAcesso;
 
-    public static TelaListarAcesso getJanela(){return janela;}
-    public JFrame getTela(){return tela;}
+    public static TelaListarAcesso getJanela(){
+        if(janela==null){janela = new TelaListarAcesso();}
+        return janela;
+    }
+
+    public JFrame getTela(){
+        if(tela==null){janela = new TelaListarAcesso();}
+        return tela;
+    }
+
     public void setUsuario(String nome){usuarioNome.setText("Usuario: " + nome);}
     public void setGrupo(String nome){grupoNome.setText("Grupo: " + nome);}
     public void setEmail(String nome){email.setText("email: "+ nome);}
@@ -49,18 +57,18 @@ public class TelaListarAcesso {
         JTable listaArquivo;
 
         {
-            //adicionar elementos do cabecalho
-            usuarioNome = new JLabel("Usuario: ");
-            grupoNome = new JLabel("Grupo: ");
-            email = new JLabel("Email: ");
-            cabecalho.add(usuarioNome);
-            cabecalho.add(grupoNome);
-            cabecalho.add(email);
+        //adicionar elementos do cabecalho
+        usuarioNome = new JLabel("Usuario: ");
+        grupoNome = new JLabel("Grupo: ");
+        email = new JLabel("Email: ");
+        cabecalho.add(usuarioNome);
+        cabecalho.add(grupoNome);
+        cabecalho.add(email);
 
-            //adiciona elemento <<total de acesso do  usuário>> da estatistica
-            numAcesso = new JLabel("Numero de acessos: ");
-            estatistica.add(numAcesso);
-            }
+        //adiciona elemento <<total de acesso do  usuário>> da estatistica
+        numAcesso = new JLabel("Numero de acessos: ");
+        estatistica.add(numAcesso);
+        }
 
         {
         JLabel pastaEndereco = new JLabel("caminho da pasta:");
@@ -76,14 +84,15 @@ public class TelaListarAcesso {
         frase.add(FraseSecreta); frase.add(CampoFrase);
 
         JButton Listar = new JButton("Listar");
-//        Listar.addActionListener(ActionEvent -> {
-//
-//        });
+        Listar.addActionListener(ActionEvent -> {
+
+        });
 
         listaArquivo = new JTable();
 
         JButton Voltar = new JButton("Voltar");
         Voltar.addActionListener(ActionEvent -> {
+            tela.setVisible(false);
             SystemControler.Switch("TelaPrincipal");
         });
 

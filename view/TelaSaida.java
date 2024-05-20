@@ -68,17 +68,18 @@ public class TelaSaida {
         JLabel mensagem = new JLabel("Pressione o botão Encerrar Sessão ou o botão\r\nEncerrar Sistema para confirmar.");
 
         JButton EncerrarSessao = new JButton("Encerrar Sessão");
-        //EncerrarSessao.addActionListener(ActionEvent -> {
-        //
-        //});
+        EncerrarSessao.addActionListener(ActionEvent -> {
+
+        });
 
         JButton EncerrarSistema = new JButton("Encerrar Sistema");
-        //EncerrarSistema.addActionListener(ActionEvent -> {
-        //
-        //});
+        EncerrarSistema.addActionListener(ActionEvent -> {
+
+        });
 
         JButton Voltar = new JButton("Voltar");
         Voltar.addActionListener(ActionEvent -> {
+            tela.setVisible(false);
             SystemControler.Switch("TelaPrincipal");
         });
 

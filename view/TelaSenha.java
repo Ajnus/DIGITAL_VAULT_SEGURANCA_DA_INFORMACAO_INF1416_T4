@@ -24,13 +24,19 @@ import javax.swing.JPanel;
 
 
 public class TelaSenha {
-    private static final TelaSenha janela = new TelaSenha();
+    private static TelaSenha janela;
     private static JFrame tela;
     private static JButton[] tecladoSobreCarregado;
     private static ArrayList<String> sequencia  = new ArrayList<String>(6);
 
-    public static TelaSenha getJanela(){return janela;}
-    public JFrame getTela(){return tela;}
+    public static TelaSenha getJanela(){
+        if (janela==null){janela = new TelaSenha();}
+        return janela;
+    }
+    public JFrame getTela(){
+        if (tela==null){janela = new TelaSenha();}
+        return tela;
+    }
 
     private void reRoll(){
         ArrayList<String> algarismos = new ArrayList<String>(Arrays.asList("0","1","2","3","4","5","6","7","8","9"));
@@ -42,6 +48,7 @@ public class TelaSenha {
     }
 
     private TelaSenha(){
+        TelaSenha.tecladoSobreCarregado = new JButton[5];
         tela = new JFrame("Cofre Digital - Autenticação");
         JPanel painel = new JPanel();
         painel.setLayout(new BoxLayout(painel, BoxLayout.Y_AXIS));
@@ -78,7 +85,8 @@ public class TelaSenha {
 
         JButton CONFIRMAR = new JButton("CONFIRMAR");
         CONFIRMAR.addActionListener(ActionEvent -> {
-            String[] possibilidades = (String[]) sequencia.toArray();
+            String[] possibilidades = new String[6];
+            sequencia.toArray(possibilidades);
             //boolean Check = autenticador.autenticatePassword(possibilidades);
             for(String item :sequencia){item = "";}
             sequencia.clear();

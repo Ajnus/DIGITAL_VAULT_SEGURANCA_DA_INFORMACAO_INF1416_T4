@@ -11,9 +11,11 @@ import view.TelaTOTP;
 import view.TelaListarAcesso;
 import view.TelaPrincipal;
 
+import controler.SystemControler;
+
 
 public class TesteTelas {
     public static void main(String[] args){
-        TelaPrincipal teste = TelaPrincipal.getJanela();
+        TelaListarAcesso teste = TelaListarAcesso.getJanela();
     }
 }

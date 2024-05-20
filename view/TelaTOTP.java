@@ -16,14 +16,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class TelaTOTP {
-    private static final TelaTOTP janela = new TelaTOTP();
+    private static TelaTOTP janela;
     private static JFrame tela;
 
-    private static int tentativas;
+    private static int tentativas = 0;
     private final int tentativasMax = 3;
 
-    public static TelaTOTP getJanela(){return janela;}
-    public JFrame getTela(){return tela;}
+    public static TelaTOTP getJanela(){
+        if(janela==null){janela = new TelaTOTP();}
+        return janela;
+    }
+    public JFrame getTela(){
+        if(tela==null){janela = new TelaTOTP();}
+        return tela;
+    }
 
     private TelaTOTP(){
         JFrame tela = new JFrame("Codigo Digital - Autenticação");
@@ -44,7 +50,13 @@ public class TelaTOTP {
 
         {
         JButton OK = new JButton("OK");
+        OK.addActionListener(ActionEvent -> {
+
+        });
         JButton LIMPAR = new JButton("LIMPAR");
+        LIMPAR.addActionListener(ActionEvent -> {
+
+        });
         linha2.add(OK);
         linha2.add(LIMPAR);
         }

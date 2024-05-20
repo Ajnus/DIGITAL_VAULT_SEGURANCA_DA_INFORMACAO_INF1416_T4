@@ -21,7 +21,7 @@ import javax.swing.JComboBox;
 
 
 public class TelaRegistro {
-  private static final TelaRegistro janela = new TelaRegistro();
+  private static TelaRegistro janela;
   private static JFrame tela;
 
   private static JTextField[] listaRespostas;
@@ -32,16 +32,23 @@ public class TelaRegistro {
   private static JLabel email;
   private static JLabel numUsuarios;
 
-  public TelaRegistro chama(boolean firstTime){
+  public void set(boolean firstTime){
     if(firstTime){
     //  grupoComboBox.setSelectedItem(grupo);
-    //  grupoComboBox.setEnabled(false);
+    } else{
+    //  grupoComboBox.setSelectedItem(grupo);
     }
-    return this;
+    grupoComboBox.setEnabled(!firstTime);
   }
 
-  public static TelaRegistro getJanela(){return janela;}
-  public JFrame getTela(){return tela;}
+  public static TelaRegistro getJanela(){
+    if(janela==null){janela = new TelaRegistro();}
+    return janela;
+  }
+  public JFrame getTela(){
+    if(tela==null){janela = new TelaRegistro();}
+    return tela;
+  }
   public void setUsuario(String nome){usuarioNome.setText("Usuario: " + nome);}
   public void setGrupo(String nome){grupoNome.setText("Grupo: " + nome);}
   public void setEmail(String nome){email.setText("email: "+ nome);}

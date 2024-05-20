@@ -18,7 +18,7 @@ import controler.SystemControler;
 
 
 public class TelaPrincipal{
-    private static final TelaPrincipal janela = new TelaPrincipal();
+    private static TelaPrincipal janela;
     private static JFrame tela;
 
     private static JLabel usuarioNome;
@@ -26,8 +26,14 @@ public class TelaPrincipal{
     private static JLabel email;
     private static JLabel numAcesso;
 
-    public static TelaPrincipal getJanela(){return janela;}
-    public JFrame getTela(){return tela;}
+    public static TelaPrincipal getJanela(){
+        if(janela==null){janela = new TelaPrincipal();}
+        return TelaPrincipal.janela;
+    }
+    public JFrame getTela(){
+        if(tela==null){janela = new TelaPrincipal();}
+        return TelaPrincipal.tela;
+    }
     public void setUsuario(String nome){usuarioNome.setText("Usuario: " + nome);}
     public void setGrupo(String nome){grupoNome.setText("Grupo: " + nome);}
     public void setEmail(String nome){email.setText("email: "+ nome);}
@@ -61,16 +67,19 @@ public class TelaPrincipal{
         {
         JButton cadastro = new JButton("cadastrar usuário");
         cadastro.addActionListener(ActionEvent -> {
+            tela.setVisible(false);
             SystemControler.Switch("TelaCadastro");
         });
 
         JButton consultar = new JButton("consultar arquivos");
         consultar.addActionListener(ActionEvent -> {
+            tela.setVisible(false);
             SystemControler.Switch("TelaListarAcesso");
         });
 
         JButton sair = new JButton("sair");
         sair.addActionListener(ActionEvent -> {
+            tela.setVisible(false);
             SystemControler.Switch("TelaSaida");
         });
         corpo.add(cadastro);
