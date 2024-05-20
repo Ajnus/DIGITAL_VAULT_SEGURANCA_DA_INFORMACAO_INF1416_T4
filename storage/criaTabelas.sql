@@ -26,8 +26,8 @@ CREATE TABLE Grupos (
 -- Create the Mensagens table
 CREATE TABLE Mensagens (
     MID INTEGER PRIMARY KEY AUTOINCREMENT, -- Unique message ID
-    Conteudo TEXT NOT NULL,
-    DataEnvio TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+    Conteudo TEXT NOT NULL
+    --DataEnvio TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 -- Create the Registros table
