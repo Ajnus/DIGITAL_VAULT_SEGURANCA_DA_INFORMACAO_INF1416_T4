@@ -29,7 +29,7 @@ public class TelaSenha {
     private static TelaSenha janela;
     private static JFrame tela;
     private static JButton[] tecladoSobreCarregado;
-    private static ArrayList<String> sequencia  = new ArrayList<String>(6);
+    private static ArrayList<String> sequencia  = new ArrayList<String>(8);
 
     public static TelaSenha getJanela(){
         if (janela==null){janela = new TelaSenha();}

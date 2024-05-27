@@ -230,7 +230,13 @@ public class RestoreValidateSuite {
 
         try{
             X509Certificate certificado = X509Certificate.getInstance(certificateArray);
+            X509Certificate CAcertificate = certificado.getIssuerDN(); //verificar informação
+            long serial = certificado.SerialNumber(); //verificar informação
+            String algoritmoAss = certificado.getSigAlgName(); //verificar informação
+            String algoritmoOID = certificado.getSigAlgOID(); //verificar informação
+            //certificado.verify(chaveCA);
             certificado.checkValidity();
+            
 
             chave = certificado.getPublicKey();
         }catch(CertificateException e){

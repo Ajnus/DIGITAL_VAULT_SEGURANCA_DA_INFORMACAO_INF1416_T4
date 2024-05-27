@@ -5,37 +5,58 @@
 
 package controler;
 
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
-import java.util.logging.Level;
-
 import model.TOTP;
 import model.RestoreValidateSuite;
 import model.Base32;
 import model.Authentication;
 
 public class AutenticationControler {
-    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     //
     public static boolean AuthenticateStep1(String nomeUsuario){
         boolean result = false;
 
         //verifique se nome de usuário está no banco
-        {}
+        {
+
+        }
 
         if (result){
-            
+
         }
         else{
-            
+
         }
         return result;
     }
     public static boolean AuthenticateStep2(String[] possibilidades){
         boolean result = false;
         String nomeUsuario = SystemControler.getNome();
+        String[] senhasPossiveis = new String[Math.pow(2,possibilidades.length)];
+
+        String[] escolhas = new String[possibilidades.length];
+        for(int i = 0; i<possibilidades.length; i++){
+            String[] opcao;
+            if (possibilidades[i].matches("ou"))
+            {
+                opcao = new String[2];
+                opcao[0] = possibilidades[i].substring(0,1);
+                opcao[1] = possibilidades[i].substring(-1);
+            }
+            else
+            {
+                opcao = new String[1];
+                opcao[0] = possibilidades[i];
+            }
+            escolhas[i] = opcao;
+        }
         //verifique a senha do usuário
-        {}
+        {
+
+            for(int i = 0; i < senhasPossiveis.length; i++)
+            {
+
+            }
+        }
 
         return result;
     }
