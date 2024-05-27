@@ -1,12 +1,7 @@
 {
-    "java.project.referencedLibraries": {
-        "include": [
-            "lib/**/*.jar",
-            //"bcprov-jdk15on-168.jar",
-            "model/bcprov-jdk15on-168.jar"
-        ],
-        //"exclude": [
-        //    "model/bcprov-jdk15on-168.jar"
-        //]
-    }
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "model/bcprov-jdk15on-168.jar",
+        "storage/gson-2.11.0.jar"
+    ]
 }
