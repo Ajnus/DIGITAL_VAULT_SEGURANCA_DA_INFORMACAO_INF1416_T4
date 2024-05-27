@@ -1,6 +1,7 @@
 package storage;
 
 import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,49 +14,46 @@ import java.sql.SQLException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-public class Chaveiro {
+public class Mensagens {
     private static final String DATABASE_URL = "jdbc:sqlite:CofreDigital.db";
     private static final int PORT = 8080;
 
     public static void main(String[] args) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
-        server.createContext("/api/chaveiro/add", Chaveiro::AddChaveiro);
-        server.createContext("/api/chaveiro/get", Chaveiro::GetChaveiros);
-        server.createContext("/api/chaveiro/update", Chaveiro::UpdateChaveiro);
-        server.createContext("/api/chaveiro/delete", Chaveiro::DeleteChaveiro);
+        server.createContext("/api/mensagens/add", Mensagens::AddMensagem);
+        server.createContext("/api/mensagens/get", Mensagens::GetMensagens);
+        server.createContext("/api/mensagens/update", Mensagens::UpdateMensagem);
+        server.createContext("/api/mensagens/delete", Mensagens::DeleteMensagem);
+
         server.setExecutor(null);
         server.start();
         System.out.println("Server started on port " + PORT);
     }
 
-    public static void AddChaveiro(HttpExchange exchange) throws IOException {
+    public static void AddMensagem(HttpExchange exchange) throws IOException {
         if ("POST".equals(exchange.getRequestMethod())) {
             try {
                 String requestBody = new String(exchange.getRequestBody().readAllBytes());
                 Gson gson = new Gson();
                 JsonObject json = gson.fromJson(requestBody, JsonObject.class);
 
-                int uid = json.get("UID").getAsInt();
-                byte[] certificadoDigital = json.get("certificado_digital").getAsString().getBytes();
-                byte[] chavePrivada = json.get("chave_privada").getAsString().getBytes();
+                String conteudo = json.get("conteudo").getAsString();
 
-                String sql = "INSERT INTO Chaveiro (UID, certificado_digital, chave_privada) VALUES (?, ?, ?)";
+                String sql = "INSERT INTO Mensagens (conteudo) VALUES (?)";
                 try (Connection conn = DriverManager.getConnection(DATABASE_URL);
                         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                    pstmt.setInt(1, uid);
-                    pstmt.setBytes(2, certificadoDigital);
-                    pstmt.setBytes(3, chavePrivada);
+                    pstmt.setString(1, conteudo);
                     pstmt.executeUpdate();
                 }
 
-                String response = "Chaveiro added successfully";
+                String response = "Mensagem added successfully";
                 exchange.sendResponseHeaders(200, response.getBytes().length);
                 OutputStream os = exchange.getResponseBody();
                 os.write(response.getBytes());
                 os.close();
             } catch (Exception e) {
                 e.printStackTrace();
-                String response = "Error adding chaveiro";
+                String response = "Error adding mensagem";
                 exchange.sendResponseHeaders(500, response.getBytes().length);
                 OutputStream os = exchange.getResponseBody();
                 os.write(response.getBytes());
@@ -66,27 +64,23 @@ public class Chaveiro {
         }
     }
 
-    public static void GetChaveiros(HttpExchange exchange) throws IOException {
+    public static void GetMensagens(HttpExchange exchange) throws IOException {
         if ("GET".equals(exchange.getRequestMethod())) {
             try {
                 StringBuilder result = new StringBuilder();
-                String sql = "SELECT * FROM Chaveiro";
+                String sql = "SELECT * FROM Mensagens";
 
                 try (Connection conn = DriverManager.getConnection(DATABASE_URL);
                         PreparedStatement pstmt = conn.prepareStatement(sql);
                         ResultSet rs = pstmt.executeQuery()) {
 
                     while (rs.next()) {
-                        int kid = rs.getInt("KID");
-                        int uid = rs.getInt("UID");
-                        byte[] certificadoDigital = rs.getBytes("certificado_digital");
-                        byte[] chavePrivada = rs.getBytes("chave_privada");
+                        int mid = rs.getInt("MID");
+                        String conteudo = rs.getString("conteudo");
 
                         JsonObject jsonObject = new JsonObject();
-                        jsonObject.addProperty("KID", kid);
-                        jsonObject.addProperty("UID", uid);
-                        jsonObject.addProperty("certificado_digital", new String(certificadoDigital));
-                        jsonObject.addProperty("chave_privada", new String(chavePrivada));
+                        jsonObject.addProperty("MID", mid);
+                        jsonObject.addProperty("conteudo", conteudo);
 
                         result.append(jsonObject.toString()).append("\n");
                     }
@@ -99,7 +93,7 @@ public class Chaveiro {
                 os.close();
             } catch (Exception e) {
                 e.printStackTrace();
-                String response = "Error fetching chaveiros";
+                String response = "Error fetching mensagens";
                 exchange.sendResponseHeaders(500, response.getBytes().length);
                 OutputStream os = exchange.getResponseBody();
                 os.write(response.getBytes());
@@ -110,36 +104,32 @@ public class Chaveiro {
         }
     }
 
-    public static void UpdateChaveiro(HttpExchange exchange) throws IOException {
+    public static void UpdateMensagem(HttpExchange exchange) throws IOException {
         if ("POST".equals(exchange.getRequestMethod())) {
             try {
                 String requestBody = new String(exchange.getRequestBody().readAllBytes());
                 Gson gson = new Gson();
                 JsonObject json = gson.fromJson(requestBody, JsonObject.class);
 
-                int kid = json.get("KID").getAsInt(); // ID do chaveiro a ser atualizado
-                int uid = json.get("UID").getAsInt();
-                byte[] certificadoDigital = json.get("certificado_digital").getAsString().getBytes();
-                byte[] chavePrivada = json.get("chave_privada").getAsString().getBytes();
+                int mid = json.get("MID").getAsInt(); // ID da mensagem a ser atualizada
+                String conteudo = json.get("conteudo").getAsString();
 
-                String sql = "UPDATE Chaveiro SET UID = ?, certificado_digital = ?, chave_privada = ? WHERE KID = ?";
+                String sql = "UPDATE Mensagens SET conteudo = ? WHERE MID = ?";
                 try (Connection conn = DriverManager.getConnection(DATABASE_URL);
                         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                    pstmt.setInt(1, uid);
-                    pstmt.setBytes(2, certificadoDigital);
-                    pstmt.setBytes(3, chavePrivada);
-                    pstmt.setInt(4, kid);
+                    pstmt.setString(1, conteudo);
+                    pstmt.setInt(2, mid);
                     pstmt.executeUpdate();
                 }
 
-                String response = "Chaveiro updated successfully";
+                String response = "Mensagem updated successfully";
                 exchange.sendResponseHeaders(200, response.getBytes().length);
                 OutputStream os = exchange.getResponseBody();
                 os.write(response.getBytes());
                 os.close();
             } catch (Exception e) {
                 e.printStackTrace();
-                String response = "Error updating chaveiro";
+                String response = "Error updating mensagem";
                 exchange.sendResponseHeaders(500, response.getBytes().length);
                 OutputStream os = exchange.getResponseBody();
                 os.write(response.getBytes());
@@ -150,30 +140,30 @@ public class Chaveiro {
         }
     }
 
-    public static void DeleteChaveiro(HttpExchange exchange) throws IOException {
+    public static void DeleteMensagem(HttpExchange exchange) throws IOException {
         if ("POST".equals(exchange.getRequestMethod())) {
             try {
                 String requestBody = new String(exchange.getRequestBody().readAllBytes());
                 Gson gson = new Gson();
                 JsonObject json = gson.fromJson(requestBody, JsonObject.class);
-
-                int kid = json.get("KID").getAsInt(); // ID do chaveiro a ser excluído
-
-                String sql = "DELETE FROM Chaveiro WHERE KID = ?";
+    
+                int mid = json.get("MID").getAsInt(); // ID da mensagem a ser excluída
+    
+                String sql = "DELETE FROM Mensagens WHERE MID = ?";
                 try (Connection conn = DriverManager.getConnection(DATABASE_URL);
-                        PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                    pstmt.setInt(1, kid);
+                     PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                    pstmt.setInt(1, mid);
                     pstmt.executeUpdate();
                 }
-
-                String response = "Chaveiro deleted successfully";
+    
+                String response = "Mensagem deleted successfully";
                 exchange.sendResponseHeaders(200, response.getBytes().length);
                 OutputStream os = exchange.getResponseBody();
                 os.write(response.getBytes());
                 os.close();
             } catch (Exception e) {
                 e.printStackTrace();
-                String response = "Error deleting chaveiro";
+                String response = "Error deleting mensagem";
                 exchange.sendResponseHeaders(500, response.getBytes().length);
                 OutputStream os = exchange.getResponseBody();
                 os.write(response.getBytes());
@@ -183,4 +173,5 @@ public class Chaveiro {
             exchange.sendResponseHeaders(405, -1); // Method not allowed
         }
     }
+    
 }

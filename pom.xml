@@ -12,7 +12,7 @@
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.34.0</version>
+            <version>3.45.3.0</version>
         </dependency>
         
         <!-- Google Gson dependency -->
@@ -27,12 +27,6 @@
             <groupId>com.sun.net.httpserver</groupId>
             <artifactId>http</artifactId>
             <version>20070405</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc-3.45.3.0.jar</artifactId>
-            <version>3.34.0</version>
         </dependency>
     </dependencies>
 
