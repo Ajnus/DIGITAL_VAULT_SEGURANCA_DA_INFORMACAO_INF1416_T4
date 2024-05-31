@@ -31,7 +31,7 @@ public class AutenticationControler {
     public static boolean AuthenticateStep2(String[] possibilidades){
         boolean result = false;
         String nomeUsuario = SystemControler.getNome();
-        String[] senhasPossiveis = new String[Math.pow(2,possibilidades.length)];
+        String[] senhasPossiveis = new String[(int) Math.pow(2,possibilidades.length)];
 
         String[] escolhas = new String[possibilidades.length];
         for(int i = 0; i<possibilidades.length; i++){

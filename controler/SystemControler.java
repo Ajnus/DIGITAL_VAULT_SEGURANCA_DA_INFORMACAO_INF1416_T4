@@ -59,26 +59,26 @@ public class SystemControler {
 
     private SystemControler(boolean primeira){
         principalTela = TelaPrincipal.getJanela();
-        principalTela.setVisibility(false);
+        principalTela.setVisibility(true);
 
         cadastroTela = TelaRegistro.getJanela();
         cadastroTela.set(primeira);
-        cadastroTela.setVisibility(false);
+        cadastroTela.setVisibility(true);
 
         TOTPTela = TelaTOTP.getJanela();
-        TOTPTela.setVisibility(false);
+        TOTPTela.setVisibility(true);
 
         consultaTela = TelaListarAcesso.getJanela();
-        consultaTela.setVisibility(false);
+        consultaTela.setVisibility(true);
 
         entradaTela = TelaEntrada.getJanela();
-        entradaTela.setVisibility(false);
+        entradaTela.setVisibility(true);
 
         senhaTela = TelaSenha.getJanela();
-        senhaTela.setVisibility(false);
+        senhaTela.setVisibility(true);
 
         saidaTela = TelaSaida.getJanela();
-        saidaTela.setVisibility(false);
+        saidaTela.setVisibility(true);
 
         if (primeira){
             telaAtual = cadastroTela.getTela();

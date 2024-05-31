@@ -46,167 +46,175 @@ import java.nio.ByteBuffer;
 // -------------------------
 public class RestoreValidateSuite {
 
-    public static boolean Validate(File digitalEnvelope, File digitalSignature, File arquivoENCriptografado, File certificadoUsuario, PrivateKey chaveUsuario){
+    public static boolean Validate(File digitalEnvelope, File digitalSignature, File arquivoENCriptografado,
+            File certificadoUsuario, PrivateKey chaveUsuario) {
         boolean result = false;
         int tamNameENV = digitalEnvelope.getName().length();
         int tamNameASD = digitalSignature.getName().length();
         int tamNameENC = arquivoENCriptografado.getName().length();
         int tamNameCRT = certificadoUsuario.getName().length();
 
-        if(!digitalEnvelope.getName().substring(tamNameENV-4).equals(".env")){
+        if (!digitalEnvelope.getName().substring(tamNameENV - 4).equals(".env")) {
             System.err.println("Envelope digital invalido");
             return false;
         }
 
-        if(!arquivoENCriptografado.getName().substring(tamNameENC-4).equals(".enc")){
+        if (!arquivoENCriptografado.getName().substring(tamNameENC - 4).equals(".enc")) {
             System.err.println("Arquivo encriptografado invalido");
             return false;
         }
 
-        if(!digitalSignature.getName().substring(tamNameASD-4).equals(".asd")){
+        if (!digitalSignature.getName().substring(tamNameASD - 4).equals(".asd")) {
             System.err.println("Assinatura digital invalido");
             return false;
         }
 
-        if(!certificadoUsuario.getName().substring(tamNameCRT-4).equals(".crt")){
+        if (!certificadoUsuario.getName().substring(tamNameCRT - 4).equals(".crt")) {
             System.err.println("Certificado invalido");
             return false;
         }
 
-        String codenameENV = digitalEnvelope.getName().substring(0, tamNameENV-4);
-        String codenameENC = arquivoENCriptografado.getName().substring(0, tamNameENC-4);
-        String codenameASD = digitalSignature.getName().substring(0, tamNameASD-4);
-        if(!(codenameENV.equals(codenameENC) && codenameENC.equals(codenameASD))){
+        String codenameENV = digitalEnvelope.getName().substring(0, tamNameENV - 4);
+        String codenameENC = arquivoENCriptografado.getName().substring(0, tamNameENC - 4);
+        String codenameASD = digitalSignature.getName().substring(0, tamNameASD - 4);
+        if (!(codenameENV.equals(codenameENC) && codenameENC.equals(codenameASD))) {
             System.err.println("Envelope, Encriptado ou Assinatura são de diferentes arquivos");
             return false;
         }
 
         byte[] semente = null;
         {
-        byte[] EnvelopeArray = byteFromFile(digitalEnvelope);
-        semente = Decriptar("RSA/ECB/PKCS1Padding", EnvelopeArray, chaveUsuario);
+            byte[] EnvelopeArray = byteFromFile(digitalEnvelope);
+            semente = Decriptar("RSA/ECB/PKCS1Padding", EnvelopeArray, chaveUsuario);
 
-        Arrays.fill(EnvelopeArray, (byte)0);
+            Arrays.fill(EnvelopeArray, (byte) 0);
         }
 
         byte[] arquivoDecriptografado = null;
         try {
-        byte[] ENCriptedArray = byteFromFile(arquivoENCriptografado);
+            byte[] ENCriptedArray = byteFromFile(arquivoENCriptografado);
 
-        SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
-        secureRandom.setSeed(semente);
-        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-        keyGen.init(256, secureRandom);
-        SecretKey KAES = keyGen.generateKey();
+            SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+            secureRandom.setSeed(semente);
+            KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+            keyGen.init(256, secureRandom);
+            SecretKey KAES = keyGen.generateKey();
 
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE, KAES);
-        arquivoDecriptografado = cipher.doFinal(ENCriptedArray);
+            System.err.println(KAES);
 
-        Arrays.fill(ENCriptedArray, (byte)0);
-        if(!KAES.isDestroyed()){KAES.destroy();}
-        } catch(BadPaddingException e) {
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, KAES);
+            arquivoDecriptografado = cipher.doFinal(ENCriptedArray);
+
+            Arrays.fill(ENCriptedArray, (byte) 0);
+            if (!KAES.isDestroyed()) {
+                KAES.destroy();
+            }
+        } catch (BadPaddingException e) {
             System.err.println("Erro no uso do padding na decriptografia do envelope");
             System.exit(1);
-        } catch(NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             System.err.println("Algorithmo na decriptografia do envelope não encontrado");
             System.exit(1);
-        } catch(NoSuchPaddingException e){
+        } catch (NoSuchPaddingException e) {
             System.err.println("Padding na decriptografia do envelope não encontrado");
             System.exit(1);
-        } catch(InvalidKeyException e){
+        } catch (InvalidKeyException e) {
             System.err.println("Chave Invalida na decriptografia do envelope");
             System.exit(1);
-        } catch(IllegalBlockSizeException e){
+        } catch (IllegalBlockSizeException e) {
             System.err.println("Array de bytes foi feita de maneira incorreta");
             System.exit(1);
-        }catch (DestroyFailedException e) {
-            System.err.println("Erro no processo de limpesa das variaveis locais na decriptação do arquivo");
+        } catch (DestroyFailedException e) {
+            System.err.println("VALIDATE: Erro no processo de limpeza das variaveis locais na decriptação do arquivo");
         }
 
-        try{
-        byte[] CertificateArray = byteFromFile(certificadoUsuario);
-        X509Certificate certificado = X509Certificate.getInstance(CertificateArray);
+        try {
+            byte[] CertificateArray = byteFromFile(certificadoUsuario);
+            X509Certificate certificado = X509Certificate.getInstance(CertificateArray);
 
-        Signature assinaturaVerificacao = Signature.getInstance("SHA1withRSA");
-        assinaturaVerificacao.initSign(chaveUsuario);
-        assinaturaVerificacao.update(arquivoDecriptografado);
-        byte[] assinaturaTeste = assinaturaVerificacao.sign();
+            Signature assinaturaVerificacao = Signature.getInstance("SHA1withRSA");
+            assinaturaVerificacao.initSign(chaveUsuario);
+            assinaturaVerificacao.update(arquivoDecriptografado);
+            byte[] assinaturaTeste = assinaturaVerificacao.sign();
 
-        assinaturaVerificacao.initVerify(certificado.getPublicKey());
-        assinaturaVerificacao.update(arquivoDecriptografado);
-        result = assinaturaVerificacao.verify(assinaturaTeste);
+            assinaturaVerificacao.initVerify(certificado.getPublicKey());
+            assinaturaVerificacao.update(arquivoDecriptografado);
+            result = assinaturaVerificacao.verify(assinaturaTeste);
 
-        Arrays.fill(CertificateArray, (byte)0);
-        Arrays.fill(assinaturaTeste, (byte)0);
-        } catch(CertificateException e){
+            Arrays.fill(CertificateArray, (byte) 0);
+            Arrays.fill(assinaturaTeste, (byte) 0);
+        } catch (CertificateException e) {
             System.err.println("Certificado Invalido");
             System.exit(1);
-        } catch(NoSuchAlgorithmException e){
+        } catch (NoSuchAlgorithmException e) {
             System.err.println("Algorithmo de criptografia não encontrado");
             System.exit(1);
-        } catch(InvalidKeyException e){
+        } catch (InvalidKeyException e) {
             System.err.println("chave invalida");
             System.exit(1);
-        } catch(SignatureException e){
+        } catch (SignatureException e) {
             System.err.println("erro na classe Signature");
             System.exit(1);
         }
 
         {
-        Arrays.fill(arquivoDecriptografado, (byte)0);
-        Arrays.fill(semente, (byte)0);
+            Arrays.fill(arquivoDecriptografado, (byte) 0);
+            Arrays.fill(semente, (byte) 0);
         }
 
         return result;
     }
 
-    public static PrivateKey RestorePrivateKey(File keyFile, String fraseSecreta){
+    public static PrivateKey RestorePrivateKey(File keyFile, String fraseSecreta) {
         byte[] Kprivate = null;
-        try{
-        byte[] keyArray = byteFromFile(keyFile);
+        try {
+            byte[] keyArray = byteFromFile(keyFile);
 
-        SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
-        secureRandom.setSeed(fraseSecreta.getBytes());
-        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-        keyGen.init(256, secureRandom);
-        SecretKey KAES = keyGen.generateKey();
+            SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+            secureRandom.setSeed(fraseSecreta.getBytes());
+            KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+            keyGen.init(256, secureRandom);
+            SecretKey KAES = keyGen.generateKey();
 
-        Kprivate = Decriptar("AES/ECB/PKCS5Padding", keyArray, KAES);
-        String editKeydata = new String(Kprivate);
-        editKeydata = editKeydata.replaceAll("-----BEGIN PRIVATE KEY-----", "");
-        editKeydata = editKeydata.replaceAll("-----END PRIVATE KEY-----", "");
-        editKeydata = editKeydata.replaceAll("\\s","");
-        Kprivate = editKeydata.getBytes();
+            Kprivate = Decriptar("AES/ECB/PKCS5Padding", keyArray, KAES);
+            String editKeydata = new String(Kprivate);
+            editKeydata = editKeydata.replaceAll("-----BEGIN PRIVATE KEY-----", "");
+            editKeydata = editKeydata.replaceAll("-----END PRIVATE KEY-----", "");
+            editKeydata = editKeydata.replaceAll("\\s", "");
+            Kprivate = editKeydata.getBytes();
 
-        Arrays.fill(keyArray,(byte)0);
-        if(!KAES.isDestroyed()){KAES.destroy();}
-        } catch(NoSuchAlgorithmException e){
+            Arrays.fill(keyArray, (byte) 0);
+            if (!KAES.isDestroyed()) {
+                KAES.destroy();
+            }
+        } catch (NoSuchAlgorithmException e) {
             System.err.println("Algoritmo de geração de chave simétrica não encontrado");
             System.exit(1);
-        }catch (DestroyFailedException e) {
-            System.err.println("Erro no processo de limpesa das variaveis locais no processo de obtenção de chave");
+        } catch (DestroyFailedException e) {
+            System.err.println(
+                    "RESTOREPRIVATEKEY: Erro no processo de limpeza das variáveis locais no processo de obtenção de chave");
         }
 
         PKCS8EncodedKeySpec detalheChave = null;
         {
-        Decoder decodificador = Base64.getDecoder();
-        byte[] decodedBytes = new byte[Kprivate.length];
-        int result = decodificador.decode(Kprivate, decodedBytes);
-        detalheChave = new PKCS8EncodedKeySpec(decodedBytes);
+            Decoder decodificador = Base64.getDecoder();
+            byte[] decodedBytes = new byte[Kprivate.length];
+            int result = decodificador.decode(Kprivate, decodedBytes);
+            detalheChave = new PKCS8EncodedKeySpec(decodedBytes);
 
-        Arrays.fill(decodedBytes,(byte)0);
+            Arrays.fill(decodedBytes, (byte) 0);
         }
 
         PrivateKey chave = null;
         try {
 
-        KeyFactory keyFac = KeyFactory.getInstance("RSA");
-        chave = keyFac.generatePrivate(detalheChave);
-        }catch(NoSuchAlgorithmException e){
+            KeyFactory keyFac = KeyFactory.getInstance("RSA");
+            chave = keyFac.generatePrivate(detalheChave);
+        } catch (NoSuchAlgorithmException e) {
             System.err.println("algoritmo RSA não está disponível");
             System.exit(1);
-        } catch(InvalidKeySpecException e){
+        } catch (InvalidKeySpecException e) {
             System.err.println();
             System.exit(1);
         }
@@ -214,137 +222,141 @@ public class RestoreValidateSuite {
         return chave;
     }
 
-    public static PublicKey RestorePublicKey(File CertificadoDigital){
+    public static PublicKey RestorePublicKey(File CertificadoDigital) {
 
         PublicKey chave = null;
         byte[] certificateArray = new byte[(int) CertificadoDigital.length()];
         try (FileInputStream inputStream = new FileInputStream(CertificadoDigital)) {
-           inputStream.read(certificateArray);
-        } catch(FileNotFoundException e){
+            inputStream.read(certificateArray);
+        } catch (FileNotFoundException e) {
             System.err.println("Certificado Digital não encontrado");
-        } catch(IOException e){
+        } catch (IOException e) {
             System.exit(1);
         }
 
-        //verificar integridade do certificado digital
+        // verificar integridade do certificado digital
 
-        try{
+        try {
             X509Certificate certificado = X509Certificate.getInstance(certificateArray);
-            X509Certificate CAcertificate = certificado.getIssuerDN(); //verificar informação
-            long serial = certificado.SerialNumber(); //verificar informação
-            String algoritmoAss = certificado.getSigAlgName(); //verificar informação
-            String algoritmoOID = certificado.getSigAlgOID(); //verificar informação
-            //certificado.verify(chaveCA);
+            X509Certificate CAcertificate = certificado.getIssuerDN(); // verificar informação
+            long serial = certificado.SerialNumber(); // verificar informação
+            String algoritmoAss = certificado.getSigAlgName(); // verificar informação
+            String algoritmoOID = certificado.getSigAlgOID(); // verificar informação
+            // certificado.verify(chaveCA);
             certificado.checkValidity();
-            
 
             chave = certificado.getPublicKey();
-        }catch(CertificateException e){
+        } catch (CertificateException e) {
             System.err.println("Erro no acesso do certificado digital");
-            //o que façço aqui?
+            // o que façço aqui?
         }
 
         return chave;
     }
-    private static byte[] byteFromFile(File arquivo){
+
+    private static byte[] byteFromFile(File arquivo) {
         byte[] dataArray = new byte[(int) arquivo.length()];
         try (FileInputStream inputStream = new FileInputStream(arquivo)) {
-           inputStream.read(dataArray);
-        } catch(FileNotFoundException e){
+            inputStream.read(dataArray);
+        } catch (FileNotFoundException e) {
             System.err.println("arquivo não encontrado");
             System.exit(1);
-        } catch(IOException e){
+        } catch (IOException e) {
             System.err.println("Houve erro na leitura do arquivo");
             System.exit(1);
         }
         return dataArray;
     }
 
-    private static byte[] Decriptar(String tipo, byte[] dataArray, Key chave){
+    private static byte[] Decriptar(String tipo, byte[] dataArray, Key chave) {
         byte[] result = null;
-        try{
+        try {
             Cipher cipher = Cipher.getInstance(tipo);
             cipher.init(Cipher.DECRYPT_MODE, chave);
             result = cipher.doFinal(dataArray);
-        } catch(BadPaddingException e) {
+        } catch (BadPaddingException e) {
             System.err.println("Erro no uso do padding na decriptografia do envelope");
             System.exit(1);
-        } catch(NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             System.err.println("Algorithmo na decriptografia do envelope não encontrado");
             System.exit(1);
-        } catch(NoSuchPaddingException e){
+        } catch (NoSuchPaddingException e) {
             System.err.println("Padding na decriptografia do envelope não encontrado");
             System.exit(1);
-        } catch(InvalidKeyException e){
+        } catch (InvalidKeyException e) {
             System.err.println("Chave Invalida na decriptografia do envelope");
             System.exit(1);
-        } catch(IllegalBlockSizeException e){
+        } catch (IllegalBlockSizeException e) {
             System.err.println("Array de bytes foi feita de maneira incorreta");
             System.exit(1);
         }
         return result;
     }
 
-    public static void DecryptFile(File digitalEnvelope, File digitalSignature, File arquivoENCriptografado, File certificadoUsuario, PrivateKey chaveUsuario, String Endereco_file){
-        boolean validacao = Validate(digitalEnvelope, digitalSignature, arquivoENCriptografado, certificadoUsuario, chaveUsuario);
-        if (!validacao){
+    public static void DecryptFile(File digitalEnvelope, File digitalSignature, File arquivoENCriptografado,
+            File certificadoUsuario, PrivateKey chaveUsuario, String Endereco_file) {
+        boolean validacao = Validate(digitalEnvelope, digitalSignature, arquivoENCriptografado, certificadoUsuario,
+                chaveUsuario);
+        if (!validacao) {
             return;
         }
         byte[] semente = null;
         {
-        byte[] EnvelopeArray = byteFromFile(digitalEnvelope);
-        semente = Decriptar("RSA/ECB/PKCS1Padding", EnvelopeArray, chaveUsuario);
-        Arrays.fill(EnvelopeArray,(byte)0);
+            byte[] EnvelopeArray = byteFromFile(digitalEnvelope);
+            semente = Decriptar("RSA/ECB/PKCS1Padding", EnvelopeArray, chaveUsuario);
+            Arrays.fill(EnvelopeArray, (byte) 0);
         }
 
         byte[] arquivoDecriptografado = null;
         try {
-        byte[] ENCriptedArray = byteFromFile(arquivoENCriptografado);
+            byte[] ENCriptedArray = byteFromFile(arquivoENCriptografado);
 
-        SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
-        secureRandom.setSeed(semente);
-        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-        keyGen.init(256, secureRandom);
-        SecretKey KAES = keyGen.generateKey();
+            SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+            secureRandom.setSeed(semente);
+            KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+            keyGen.init(256, secureRandom);
+            SecretKey KAES = keyGen.generateKey();
 
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE, KAES);
-        arquivoDecriptografado = cipher.doFinal(ENCriptedArray);
-        if (!KAES.isDestroyed()){KAES.destroy();}
-        } catch(BadPaddingException e) {
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, KAES);
+            arquivoDecriptografado = cipher.doFinal(ENCriptedArray);
+            if (!KAES.isDestroyed()) {
+                KAES.destroy();
+            }
+        } catch (BadPaddingException e) {
             System.err.println("Erro no uso do padding na decriptografia do envelope");
             System.exit(1);
-        } catch(NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             System.err.println("Algorithmo na decriptografia do envelope não encontrado");
             System.exit(1);
-        } catch(NoSuchPaddingException e){
+        } catch (NoSuchPaddingException e) {
             System.err.println("Padding na decriptografia do envelope não encontrado");
             System.exit(1);
-        } catch(InvalidKeyException e){
+        } catch (InvalidKeyException e) {
             System.err.println("Chave Invalida na decriptografia do envelope");
             System.exit(1);
-        } catch(IllegalBlockSizeException e){
+        } catch (IllegalBlockSizeException e) {
             System.err.println("Array de bytes foi feita de maneira incorreta");
             System.exit(1);
-        }catch (DestroyFailedException e) {
-            System.err.println("Erro no processo de limpesa das variaveis locais na decriptação");
+        } catch (DestroyFailedException e) {
+            System.err.println("DECRYPTFILE: Erro no processo de limpeza das variáveis locais na decriptação");
             System.exit(1);
         }
-        //write decrypted file with FileChannel
-        try{
-        File arquivoDecriptado = new File(Endereco_file);
-        FileOutputStream writer = new FileOutputStream(arquivoDecriptado, false);
-        FileChannel channel = writer.getChannel();
-        ByteBuffer buff = ByteBuffer.wrap(arquivoDecriptografado);
-        channel.write(buff);
-        channel.close();
-        writer.close();
-        buff.clear();
-        System.out.println(arquivoDecriptografado);
-        } catch(FileNotFoundException e){
+        // write decrypted file with FileChannel
+        try {
+            File arquivoDecriptado = new File(Endereco_file);
+            FileOutputStream writer = new FileOutputStream(arquivoDecriptado, false);
+            FileChannel channel = writer.getChannel();
+            ByteBuffer buff = ByteBuffer.wrap(arquivoDecriptografado);
+            channel.write(buff);
+            channel.close();
+            writer.close();
+            buff.clear();
+            System.out.println(arquivoDecriptografado);
+        } catch (FileNotFoundException e) {
             System.err.println("Não foi possivel disponibilizar o arquivo decriptografado");
             System.exit(1);
-        } catch(IOException e){
+        } catch (IOException e) {
             System.err.println("Erro na escrita do arquivo decriptografado");
             System.exit(1);
         }
