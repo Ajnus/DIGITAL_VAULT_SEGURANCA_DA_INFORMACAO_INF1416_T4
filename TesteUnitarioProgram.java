@@ -49,7 +49,7 @@ public class TesteUnitarioProgram {
         String pathkey = "SafeVault/Keys/user04-pkcs8-aes.pem"; // TO DO: by linha de comando
         String pathCrt = "SafeVault/Keys/user04-x509.crt"; // TO DO: by linha de comando
         String pathFiles = "SafeVault/Files"; // TO DO: by linha de comando
-        String filePrefixString = "XXYYZZ03"; // TO DO: by linha de comando
+        String filePrefixString = "XXYYZZ01"; // TO DO: by linha de comando
         String baseFile = pathFiles + "/" + filePrefixString; // TO DO: by linha de comando
 
         // System.err.println(baseFile);
