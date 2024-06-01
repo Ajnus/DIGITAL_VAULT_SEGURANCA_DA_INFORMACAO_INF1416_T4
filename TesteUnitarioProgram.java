@@ -57,27 +57,27 @@ public class TesteUnitarioProgram {
         String pathAsd = baseFile + ".asd";
         String pathEnc = baseFile + ".enc";
         String pathEnv = baseFile + ".env";
-        
 
         File keyFile = new File(pathkey);
         File certificado = new File(pathCrt);
         File assinatura = new File(pathAsd);
         File encriptado = new File(pathEnc);
         File envelope = new File(pathEnv);
-        
 
         // printBinaryFileContent(keyFile);
         // printFileContent(certificado);
         // printBinaryFileContent(assinatura);
         // printFileContent(encriptado);
-        printFileContent(envelope);
-
+        // printFileContent(envelope);
 
         String nomeArquivo = "";
 
         // PublicKey chavePublica = RestoreValidateSuite.RestorePublicKey(certificado);
         PrivateKey chaveUsuario = RestoreValidateSuite.RestorePrivateKey(keyFile, fraseSecreta);
-        RestoreValidateSuite.DecryptFile(envelope, assinatura, encriptado, certificado, chaveUsuario, nomeArquivo);
+        // RestoreValidateSuite.DecryptFile(envelope, assinatura, encriptado,
+        // certificado, chaveUsuario, nomeArquivo);
+
+        System.out.println("Chave Privada: " + chaveUsuario.toString());
     }
 
     public static String HexCodeString(byte[] hexCode) {

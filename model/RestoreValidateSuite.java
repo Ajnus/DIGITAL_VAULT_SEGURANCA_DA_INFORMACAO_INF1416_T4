@@ -7,6 +7,7 @@ package model;
 
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.Principal;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Key;
@@ -25,8 +26,8 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 
-import javax.security.cert.X509Certificate;
-import javax.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.security.cert.CertificateException;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -35,10 +36,14 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.security.auth.DestroyFailedException;
+import javax.security.auth.Destroyable;
 
 import java.nio.channels.FileChannel;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
+import java.security.cert.CertificateFactory;
+import java.io.ByteArrayInputStream;
+import java.math.BigInteger;
 
 // -------------------------
 // Jam Ajna Soares - 2211689 
@@ -100,15 +105,17 @@ public class RestoreValidateSuite {
             keyGen.init(256, secureRandom);
             SecretKey KAES = keyGen.generateKey();
 
-            System.err.println(KAES);
+            System.err.println("VALIDATE, KAES: " + KAES);
 
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.DECRYPT_MODE, KAES);
             arquivoDecriptografado = cipher.doFinal(ENCriptedArray);
 
             Arrays.fill(ENCriptedArray, (byte) 0);
-            if (!KAES.isDestroyed()) {
-                KAES.destroy();
+
+            // Verifique se KAES pode ser destruída
+            if (KAES instanceof Destroyable) {
+                ((Destroyable) KAES).destroy();
             }
         } catch (BadPaddingException e) {
             System.err.println("Erro no uso do padding na decriptografia do envelope");
@@ -131,7 +138,9 @@ public class RestoreValidateSuite {
 
         try {
             byte[] CertificateArray = byteFromFile(certificadoUsuario);
-            X509Certificate certificado = X509Certificate.getInstance(CertificateArray);
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+            X509Certificate certificado = (X509Certificate) certificateFactory
+                    .generateCertificate(new ByteArrayInputStream(CertificateArray));
 
             Signature assinaturaVerificacao = Signature.getInstance("SHA1withRSA");
             assinaturaVerificacao.initSign(chaveUsuario);
@@ -144,6 +153,7 @@ public class RestoreValidateSuite {
 
             Arrays.fill(CertificateArray, (byte) 0);
             Arrays.fill(assinaturaTeste, (byte) 0);
+
         } catch (CertificateException e) {
             System.err.println("Certificado Invalido");
             System.exit(1);
@@ -177,38 +187,54 @@ public class RestoreValidateSuite {
             keyGen.init(256, secureRandom);
             SecretKey KAES = keyGen.generateKey();
 
+            // System.out.println("RESTOREPRIVATEKEY, KAES: " + KAES);
+
             Kprivate = Decriptar("AES/ECB/PKCS5Padding", keyArray, KAES);
             String editKeydata = new String(Kprivate);
+
+            // System.out.println("RESTOREPRIVATEKEY, editKeydata: " + editKeydata);
+
             editKeydata = editKeydata.replaceAll("-----BEGIN PRIVATE KEY-----", "");
             editKeydata = editKeydata.replaceAll("-----END PRIVATE KEY-----", "");
             editKeydata = editKeydata.replaceAll("\\s", "");
+
+            // System.out.println("RESTOREPRIVATEKEY, editKeydata:\n" + editKeydata);
+
             Kprivate = editKeydata.getBytes();
 
             Arrays.fill(keyArray, (byte) 0);
-            if (!KAES.isDestroyed()) {
-                KAES.destroy();
-            }
+
+            /*
+             * TO DO ?
+             * if (KAES instanceof Destroyable) {
+             * System.out.println("É DESTROYABLE\n");
+             * KAES.destroy();
+             * }
+             */
         } catch (NoSuchAlgorithmException e) {
             System.err.println("Algoritmo de geração de chave simétrica não encontrado");
+            e.printStackTrace();
             System.exit(1);
-        } catch (DestroyFailedException e) {
-            System.err.println(
-                    "RESTOREPRIVATEKEY: Erro no processo de limpeza das variáveis locais no processo de obtenção de chave");
-        }
+        } /*
+           * catch (DestroyFailedException e) {
+           * System.err.println(
+           * "RESTOREPRIVATEKEY: Erro no processo de limpeza das variáveis locais no processo de obtenção de chave"
+           * );
+           * e.printStackTrace();
+           * System.exit(1); TO DO?
+           */
 
         PKCS8EncodedKeySpec detalheChave = null;
-        {
-            Decoder decodificador = Base64.getDecoder();
-            byte[] decodedBytes = new byte[Kprivate.length];
-            int result = decodificador.decode(Kprivate, decodedBytes);
-            detalheChave = new PKCS8EncodedKeySpec(decodedBytes);
 
-            Arrays.fill(decodedBytes, (byte) 0);
-        }
+        Decoder decodificador = Base64.getDecoder();
+        byte[] decodedBytes = new byte[Kprivate.length];
+        int result = decodificador.decode(Kprivate, decodedBytes);
+        detalheChave = new PKCS8EncodedKeySpec(decodedBytes);
+
+        Arrays.fill(decodedBytes, (byte) 0);
 
         PrivateKey chave = null;
         try {
-
             KeyFactory keyFac = KeyFactory.getInstance("RSA");
             chave = keyFac.generatePrivate(detalheChave);
         } catch (NoSuchAlgorithmException e) {
@@ -234,12 +260,14 @@ public class RestoreValidateSuite {
             System.exit(1);
         }
 
-        // verificar integridade do certificado digital
+        // ...
 
         try {
-            X509Certificate certificado = X509Certificate.getInstance(certificateArray);
-            X509Certificate CAcertificate = certificado.getIssuerDN(); // verificar informação
-            long serial = certificado.SerialNumber(); // verificar informação
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+            X509Certificate certificado = (X509Certificate) certificateFactory
+                    .generateCertificate(new ByteArrayInputStream(certificateArray));
+            Principal CAcertificate = certificado.getIssuerX500Principal(); // verificar informação
+            BigInteger serial = certificado.getSerialNumber(); // verificar informação
             String algoritmoAss = certificado.getSigAlgName(); // verificar informação
             String algoritmoOID = certificado.getSigAlgOID(); // verificar informação
             // certificado.verify(chaveCA);

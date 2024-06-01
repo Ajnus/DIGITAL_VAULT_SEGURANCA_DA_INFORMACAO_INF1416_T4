@@ -47,7 +47,7 @@ public class AutenticationControler {
                 opcao = new String[1];
                 opcao[0] = possibilidades[i];
             }
-            escolhas[i] = opcao;
+            //escolhas[i] = opcao;
         }
         //verifique a senha do usuário
         {
