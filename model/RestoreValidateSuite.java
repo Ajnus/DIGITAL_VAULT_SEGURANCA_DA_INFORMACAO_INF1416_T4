@@ -177,7 +177,7 @@ public class RestoreValidateSuite {
     }
 
     public static PrivateKey RestorePrivateKey(File keyFile, String fraseSecreta) {
-        byte[] Kprivate = null;
+        byte[] KPriv = null;
         try {
             byte[] keyArray = byteFromFile(keyFile);
 
@@ -189,8 +189,8 @@ public class RestoreValidateSuite {
 
             // System.out.println("RESTOREPRIVATEKEY, KAES: " + KAES);
 
-            Kprivate = Decriptar("AES/ECB/PKCS5Padding", keyArray, KAES);
-            String editKeydata = new String(Kprivate);
+            KPriv = Decriptar("AES/ECB/PKCS5Padding", keyArray, KAES);
+            String editKeydata = new String(KPriv);
 
             // System.out.println("RESTOREPRIVATEKEY, editKeydata: " + editKeydata);
 
@@ -200,7 +200,7 @@ public class RestoreValidateSuite {
 
             // System.out.println("RESTOREPRIVATEKEY, editKeydata:\n" + editKeydata);
 
-            Kprivate = editKeydata.getBytes();
+            KPriv = editKeydata.getBytes();
 
             Arrays.fill(keyArray, (byte) 0);
 
@@ -227,8 +227,8 @@ public class RestoreValidateSuite {
         PKCS8EncodedKeySpec detalheChave = null;
 
         Decoder decodificador = Base64.getDecoder();
-        byte[] decodedBytes = new byte[Kprivate.length];
-        int result = decodificador.decode(Kprivate, decodedBytes);
+        byte[] decodedBytes = new byte[KPriv.length];
+        int result = decodificador.decode(KPriv, decodedBytes); // ?
         detalheChave = new PKCS8EncodedKeySpec(decodedBytes);
 
         Arrays.fill(decodedBytes, (byte) 0);
@@ -250,7 +250,7 @@ public class RestoreValidateSuite {
 
     public static PublicKey RestorePublicKey(File CertificadoDigital) {
 
-        PublicKey chave = null;
+        PublicKey KPub = null;
         byte[] certificateArray = new byte[(int) CertificadoDigital.length()];
         try (FileInputStream inputStream = new FileInputStream(CertificadoDigital)) {
             inputStream.read(certificateArray);
@@ -260,26 +260,30 @@ public class RestoreValidateSuite {
             System.exit(1);
         }
 
-        // ...
-
         try {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
             X509Certificate certificado = (X509Certificate) certificateFactory
                     .generateCertificate(new ByteArrayInputStream(certificateArray));
-            Principal CAcertificate = certificado.getIssuerX500Principal(); // verificar informação
-            BigInteger serial = certificado.getSerialNumber(); // verificar informação
-            String algoritmoAss = certificado.getSigAlgName(); // verificar informação
-            String algoritmoOID = certificado.getSigAlgOID(); // verificar informação
+            Principal CAcertificate = certificado.getIssuerX500Principal();
+            BigInteger serial = certificado.getSerialNumber();
+            String algoritmoAss = certificado.getSigAlgName();
+            String algoritmoOID = certificado.getSigAlgOID();
             // certificado.verify(chaveCA);
+
+            System.out.println("CAcertificate:\n" + CAcertificate);
+            System.out.println("serial: " + serial);
+            System.out.println("algoritmoAss: " + algoritmoAss);
+            System.out.println("algoritmoOID: " + algoritmoOID);
+
             certificado.checkValidity();
 
-            chave = certificado.getPublicKey();
+            KPub = certificado.getPublicKey();
         } catch (CertificateException e) {
             System.err.println("Erro no acesso do certificado digital");
             // o que façço aqui?
         }
 
-        return chave;
+        return KPub;
     }
 
     private static byte[] byteFromFile(File arquivo) {
