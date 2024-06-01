@@ -45,11 +45,11 @@ public class TesteUnitarioProgram {
         // }catch(Exception e){System.err.println("Erro no teste de
         // TOTP");System.exit(1);}
 
-        String fraseSecreta = "admin"; // TO DO: by linha de comando
-        String pathkey = "SafeVault/Keys/admin-pkcs8-aes.pem"; // TO DO: by linha de comando
-        String pathCrt = "SafeVault/Keys/admin-x509.crt"; // TO DO: by linha de comando
+        String fraseSecreta = "user04"; // TO DO: by linha de comando
+        String pathkey = "SafeVault/Keys/user04-pkcs8-aes.pem"; // TO DO: by linha de comando
+        String pathCrt = "SafeVault/Keys/user04-x509.crt"; // TO DO: by linha de comando
         String pathFiles = "SafeVault/Files"; // TO DO: by linha de comando
-        String filePrefixString = "index"; // TO DO: by linha de comando
+        String filePrefixString = "XXYYZZ03"; // TO DO: by linha de comando
         String baseFile = pathFiles + "/" + filePrefixString; // TO DO: by linha de comando
 
         // System.err.println(baseFile);
