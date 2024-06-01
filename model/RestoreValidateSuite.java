@@ -105,7 +105,7 @@ public class RestoreValidateSuite {
             keyGen.init(256, secureRandom);
             SecretKey KAES = keyGen.generateKey();
 
-            System.err.println("VALIDATE, KAES: " + KAES);
+            // System.err.println("VALIDATE, KAES: " + KAES);
 
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.DECRYPT_MODE, KAES);
@@ -113,28 +113,41 @@ public class RestoreValidateSuite {
 
             Arrays.fill(ENCriptedArray, (byte) 0);
 
-            // Verifique se KAES pode ser destruída
-            if (KAES instanceof Destroyable) {
-                ((Destroyable) KAES).destroy();
-            }
+            /*
+             * TO DO ?
+             * if (KAES instanceof Destroyable) {
+             * System.out.println("É DESTROYABLE\n");
+             * KAES.destroy();
+             * }
+             */
         } catch (BadPaddingException e) {
             System.err.println("Erro no uso do padding na decriptografia do envelope");
+            e.printStackTrace();
             System.exit(1);
         } catch (NoSuchAlgorithmException e) {
             System.err.println("Algorithmo na decriptografia do envelope não encontrado");
+            e.printStackTrace();
             System.exit(1);
         } catch (NoSuchPaddingException e) {
             System.err.println("Padding na decriptografia do envelope não encontrado");
+            e.printStackTrace();
             System.exit(1);
         } catch (InvalidKeyException e) {
             System.err.println("Chave Invalida na decriptografia do envelope");
+            e.printStackTrace();
             System.exit(1);
         } catch (IllegalBlockSizeException e) {
             System.err.println("Array de bytes foi feita de maneira incorreta");
+            e.printStackTrace();
             System.exit(1);
-        } catch (DestroyFailedException e) {
-            System.err.println("VALIDATE: Erro no processo de limpeza das variaveis locais na decriptação do arquivo");
-        }
+        } /*
+           * catch (DestroyFailedException e) {
+           * System.err.println(
+           * "VALIDATE: Erro no processo de limpeza das variáveis locais no processo de obtenção de chave"
+           * );
+           * e.printStackTrace();
+           * System.exit(1); TO DO?
+           */
 
         try {
             byte[] CertificateArray = byteFromFile(certificadoUsuario);
@@ -156,15 +169,19 @@ public class RestoreValidateSuite {
 
         } catch (CertificateException e) {
             System.err.println("Certificado Invalido");
+            e.printStackTrace();
             System.exit(1);
         } catch (NoSuchAlgorithmException e) {
             System.err.println("Algorithmo de criptografia não encontrado");
+            e.printStackTrace();
             System.exit(1);
         } catch (InvalidKeyException e) {
             System.err.println("chave invalida");
+            e.printStackTrace();
             System.exit(1);
         } catch (SignatureException e) {
             System.err.println("erro na classe Signature");
+            e.printStackTrace();
             System.exit(1);
         }
 
@@ -239,9 +256,11 @@ public class RestoreValidateSuite {
             chave = keyFac.generatePrivate(detalheChave);
         } catch (NoSuchAlgorithmException e) {
             System.err.println("algoritmo RSA não está disponível");
+            e.printStackTrace();
             System.exit(1);
         } catch (InvalidKeySpecException e) {
             System.err.println();
+            e.printStackTrace();
             System.exit(1);
         }
 
@@ -257,6 +276,7 @@ public class RestoreValidateSuite {
         } catch (FileNotFoundException e) {
             System.err.println("Certificado Digital não encontrado");
         } catch (IOException e) {
+            e.printStackTrace();
             System.exit(1);
         }
 
@@ -292,9 +312,11 @@ public class RestoreValidateSuite {
             inputStream.read(dataArray);
         } catch (FileNotFoundException e) {
             System.err.println("arquivo não encontrado");
+            e.printStackTrace();
             System.exit(1);
         } catch (IOException e) {
             System.err.println("Houve erro na leitura do arquivo");
+            e.printStackTrace();
             System.exit(1);
         }
         return dataArray;
@@ -308,18 +330,23 @@ public class RestoreValidateSuite {
             result = cipher.doFinal(dataArray);
         } catch (BadPaddingException e) {
             System.err.println("Erro no uso do padding na decriptografia do envelope");
+            e.printStackTrace();
             System.exit(1);
         } catch (NoSuchAlgorithmException e) {
             System.err.println("Algorithmo na decriptografia do envelope não encontrado");
+            e.printStackTrace();
             System.exit(1);
         } catch (NoSuchPaddingException e) {
             System.err.println("Padding na decriptografia do envelope não encontrado");
+            e.printStackTrace();
             System.exit(1);
         } catch (InvalidKeyException e) {
             System.err.println("Chave Invalida na decriptografia do envelope");
+            e.printStackTrace();
             System.exit(1);
         } catch (IllegalBlockSizeException e) {
             System.err.println("Array de bytes foi feita de maneira incorreta");
+            e.printStackTrace();
             System.exit(1);
         }
         return result;
@@ -352,28 +379,43 @@ public class RestoreValidateSuite {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.DECRYPT_MODE, KAES);
             arquivoDecriptografado = cipher.doFinal(ENCriptedArray);
-            if (!KAES.isDestroyed()) {
-                KAES.destroy();
-            }
+
+            /*
+             * TO DO ?
+             * if (KAES instanceof Destroyable) {
+             * System.out.println("É DESTROYABLE\n");
+             * KAES.destroy();
+             * }
+             */
         } catch (BadPaddingException e) {
             System.err.println("Erro no uso do padding na decriptografia do envelope");
+            e.printStackTrace();
             System.exit(1);
         } catch (NoSuchAlgorithmException e) {
             System.err.println("Algorithmo na decriptografia do envelope não encontrado");
+            e.printStackTrace();
             System.exit(1);
         } catch (NoSuchPaddingException e) {
             System.err.println("Padding na decriptografia do envelope não encontrado");
+            e.printStackTrace();
             System.exit(1);
         } catch (InvalidKeyException e) {
             System.err.println("Chave Invalida na decriptografia do envelope");
+            e.printStackTrace();
             System.exit(1);
         } catch (IllegalBlockSizeException e) {
             System.err.println("Array de bytes foi feita de maneira incorreta");
+            e.printStackTrace();
             System.exit(1);
-        } catch (DestroyFailedException e) {
-            System.err.println("DECRYPTFILE: Erro no processo de limpeza das variáveis locais na decriptação");
-            System.exit(1);
-        }
+        } /*
+           * catch (DestroyFailedException e) {
+           * System.err.println(
+           * "RESTOREPRIVATEKEY: Erro no processo de limpeza das variáveis locais no processo de obtenção de chave"
+           * );
+           * e.printStackTrace();
+           * System.exit(1); TO DO?
+           */
+
         // write decrypted file with FileChannel
         try {
             File arquivoDecriptado = new File(Endereco_file);
@@ -384,12 +426,14 @@ public class RestoreValidateSuite {
             channel.close();
             writer.close();
             buff.clear();
-            System.out.println(arquivoDecriptografado);
+            System.out.println("\n" + arquivoDecriptografado);
         } catch (FileNotFoundException e) {
             System.err.println("Não foi possivel disponibilizar o arquivo decriptografado");
+            e.printStackTrace();
             System.exit(1);
         } catch (IOException e) {
             System.err.println("Erro na escrita do arquivo decriptografado");
+            e.printStackTrace();
             System.exit(1);
         }
 

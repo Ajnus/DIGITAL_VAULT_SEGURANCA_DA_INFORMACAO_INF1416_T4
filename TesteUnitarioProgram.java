@@ -70,16 +70,15 @@ public class TesteUnitarioProgram {
         // printFileContent(encriptado);
         // printFileContent(envelope);
 
-        String nomeArquivo = "";
+        String nomeArquivo = baseFile + ".new";
 
-        
         PrivateKey chaveUsuario = RestoreValidateSuite.RestorePrivateKey(keyFile, fraseSecreta);
         PublicKey chavePublica = RestoreValidateSuite.RestorePublicKey(certificado);
-        // RestoreValidateSuite.DecryptFile(envelope, assinatura, encriptado,
-        // certificado, chaveUsuario, nomeArquivo);
 
         System.out.println("\nChave Privada: " + chaveUsuario.toString());
-        System.out.println("\nChave Publica: " + chavePublica.toString());
+        System.out.println("\nChave Pública: " + chavePublica.toString());
+        RestoreValidateSuite.DecryptFile(envelope, assinatura, encriptado,
+                certificado, chaveUsuario, nomeArquivo);
     }
 
     public static String HexCodeString(byte[] hexCode) {
