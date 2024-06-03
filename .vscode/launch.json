@@ -1,0 +1,21 @@
+{
+    // Use o IntelliSense para saber mais sobre os atributos possíveis.
+    // Focalizar para exibir as descrições dos atributos existentes.
+    // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "TesteUnitarioProgram",
+            "request": "launch",
+            "mainClass": "TesteUnitarioProgram",
+            //"projectName": "DIGITAL_VAULT_SEGURANCA_DA_INFORMACAO_INF1416_T4",
+            "args": [
+                "user04",
+                "SafeVault/Keys/user04-pkcs8-aes.pem",
+                "SafeVault/Keys/user04-x509.crt",
+                "SafeVault/Files/XXYYZZ03"
+            ]
+        },    
+    ]
+}

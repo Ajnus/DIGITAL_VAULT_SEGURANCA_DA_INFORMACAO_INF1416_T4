@@ -40,11 +40,14 @@ import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.security.cert.CertificateFactory;
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
 
 // -------------------------
 // Jam Ajna Soares - 2211689 
@@ -121,7 +124,7 @@ public class RestoreValidateSuite {
              * }
              */
         } catch (BadPaddingException e) {
-            System.err.println("Erro no uso do padding na decriptação do envelope");
+            System.err.println("VALIDATE: Erro no uso do padding na decriptação do envelope");
             e.printStackTrace();
             System.exit(1);
         } catch (NoSuchAlgorithmException e) {
@@ -156,72 +159,77 @@ public class RestoreValidateSuite {
             X509Certificate certificado = (X509Certificate) certificateFactory
                     .generateCertificate(new ByteArrayInputStream(CertificateArray));
 
+            // Verificar a validade do certificado
+            /*
+            try {
+                certificado.checkValidity();
+                System.out.println("O certificado é válido.");
+            } catch (CertificateExpiredException e) {
+                System.err.println("O certificado expirou em: " + certificado.getNotAfter());
+                return false;
+            } catch (CertificateNotYetValidException e) {
+                System.err.println("O certificado não é válido até: " + certificado.getNotBefore());
+                return false;
+            }
+            */
+
             Signature assinaturaVerificacao = Signature.getInstance("SHA1withRSA");
             assinaturaVerificacao.initVerify(certificado.getPublicKey());
             assinaturaVerificacao.update(arquivoDecriptografado);
-
             // assinaturaVerificacao.initSign(chaveUsuario);
             // byte[] assinaturaTeste = assinaturaVerificacao.sign();
 
             byte[] assinaturaTeste = byteFromFile(digitalSignature);
 
             if (!assinaturaVerificacao.verify(assinaturaTeste)) {
-                System.err.println("Falha na verificação da assinatura digital. Integridade comprometida.");
+                System.err.println("Falha na verificação da assinatura digital. Erro de integridade e autenticidade.");
                 // return false; comentadado para dar segmento à comparação e impressão de hashs
             } else
                 result = true;
 
             // assinaturaVerificacao.update(arquivoDecriptografado);
 
+            /*
+             * assinaturaVerificacao.initVerify(certificado.getPublicKey());
+             * assinaturaVerificacao.update(arquivoDecriptografado);
+             */
+
+            // assinaturaVerificacao.initSign(chaveUsuario);
+            // byte[] assinaturaTeste = assinaturaVerificacao.sign();
+
+            // byte[] assinaturaTeste = byteFromFile(digitalSignature);
+
+            // assinaturaVerificacao.update(arquivoDecriptografado);
+
+
             // Verificar o hash dos dados decriptados
-            try {
-                MessageDigest md = MessageDigest.getInstance("SHA-256");
-                byte[] hashCalculado = md.digest(arquivoDecriptografado);
-
-                if (!Arrays.equals(hashCalculado, hashOriginal)) {
-                    System.err.println(
-                            "Erro de integridade: hash dos dados decriptados não corresponde ao hash original.");
-
-                    PrintHash(hashOriginal, "Original");
-                    PrintHash(hashCalculado, "Calculado");
-                    /*
-                     * StringBuilder hexOriginalString = new StringBuilder();
-                     * StringBuilder hexCalculadoString = new StringBuilder();
-                     * 
-                     * for (byte b : hashOriginal) {
-                     * // Converter cada byte para dois caracteres hexadecimais
-                     * String hex = Integer.toHexString(0xff & b);
-                     * if (hex.length() == 1) {
-                     * hexOriginalString.append('0'); // Garantir que cada byte seja representado
-                     * por dois
-                     * // caracteres
-                     * }
-                     * hexOriginalString.append(hex);
-                     * }
-                     * 
-                     * for (byte b : hashCalculado) {
-                     * // Converter cada byte para dois caracteres hexadecimais
-                     * String hex = Integer.toHexString(0xff & b);
-                     * if (hex.length() == 1) {
-                     * hexOriginalString.append('0'); // Garantir que cada byte seja representado
-                     * por dois
-                     * // caracteres
-                     * }
-                     * hexCalculadoString.append(hex);
-                     * }
-                     * 
-                     * System.out.println("Hash Original: " + hexOriginalString.toString());
-                     * System.out.println("Hash Calculado: " + hexCalculadoString.toString());
-                     */
-                    return false;
-                } else
-                    result = true;
-
-            } catch (NoSuchAlgorithmException e) {
-                System.err.println("Algoritmo de hash não encontrado: " + e.getMessage());
-                e.printStackTrace();
-                return false;
-            }
+            /*
+             * try {
+             * MessageDigest md = MessageDigest.getInstance("SHA-256");
+             * byte[] hashCalculado = md.digest(arquivoDecriptografado);
+             * 
+             * // System.out.println("Conteúdo do arquivo decriptografado: ");
+             * // System.out.println(new String(arquivoDecriptografado,
+             * // StandardCharsets.UTF_8));
+             * 
+             * if (!Arrays.equals(hashCalculado, hashOriginal)) {
+             * System.err.println(
+             * "Erro de integridade: hash dos dados decriptados não corresponde ao hash original."
+             * );
+             * 
+             * PrintHash(hashOriginal, "Original");
+             * PrintHash(hashCalculado, "Calculado");
+             * 
+             * result = false;
+             * } else
+             * result = true;
+             * 
+             * } catch (NoSuchAlgorithmException e) {
+             * System.err.println("Algoritmo de hash não encontrado: " + e.getMessage());
+             * e.printStackTrace();
+             * return false;
+             * }
+             */
 
             // Limpar dados sensíveis
             Arrays.fill(CertificateArray, (byte) 0);
@@ -387,7 +395,7 @@ public class RestoreValidateSuite {
             cipher.init(Cipher.DECRYPT_MODE, chave);
             result = cipher.doFinal(dataArray);
         } catch (BadPaddingException e) {
-            System.err.println("Erro no uso do padding na decriptação do envelope");
+            System.err.println("DECRIPTAR: Erro no uso do padding na decriptação do envelope");
             e.printStackTrace();
             System.exit(1);
         } catch (NoSuchAlgorithmException e) {
@@ -446,7 +454,7 @@ public class RestoreValidateSuite {
              * }
              */
         } catch (BadPaddingException e) {
-            System.err.println("Erro no uso do padding na decriptação do envelope");
+            System.err.println("DECRYPTFILE: Erro no uso do padding na decriptação do envelope");
             e.printStackTrace();
             System.exit(1);
         } catch (NoSuchAlgorithmException e) {

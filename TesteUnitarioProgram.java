@@ -27,6 +27,23 @@ import java.nio.file.Paths;
 public class TesteUnitarioProgram {
 
     public static void main(String[] args) {
+        if (args.length != 4) {
+            System.err.println(
+                    "Uso: java SeuPrograma <frase_secreta> <caminho_chave_privada> <caminho_certificado> <pasta_arquivos/prefixo_arquivo>");
+            System.exit(1);
+        }
+
+        // Frase secreta do usuário
+        String fraseSecreta = args[0];
+
+        // Caminho para o arquivo de chave privada
+        String pathkey = args[1];
+
+        // Caminho para o arquivo de certificado
+        String pathCrt = args[2];
+
+        // baseFiles
+        String baseFile = args[3];
 
         // TOTP cobaia_auth = null;
         // try{
@@ -51,12 +68,12 @@ public class TesteUnitarioProgram {
         // }catch(Exception e){System.err.println("Erro no teste de
         // TOTP");System.exit(1);}
 
-        String fraseSecreta = "user04"; // TO DO: by linha de comando
-        String pathkey = "SafeVault/Keys/user04-pkcs8-aes.pem"; // TO DO: by linha de comando
-        String pathCrt = "SafeVault/Keys/user04-x509.crt"; // TO DO: by linha de comando
+        //String fraseSecreta = "user01"; // TO DO: by linha de comando
+        //String pathkey = "SafeVault/Keys/user01-pkcs8-aes.pem"; // TO DO: by linha de comando
+        //String pathCrt = "SafeVault/Keys/user01-x509.crt"; // TO DO: by linha de comando
         String pathFiles = "SafeVault/Files"; // TO DO: by linha de comando
-        String filePrefixString = "XXYYZZ01"; // TO DO: by linha de comando
-        String baseFile = pathFiles + "/" + filePrefixString; // TO DO: by linha de comando
+        String filePrefixString = "XXYYZZ00"; // TO DO: by linha de comando
+        //String baseFile = pathFiles + "/" + filePrefixString; // TO DO: by linha de comando
 
         // System.err.println(baseFile);
 
@@ -143,14 +160,16 @@ public class TesteUnitarioProgram {
         try {
             fileContent = Files.readAllBytes(arquivo.toPath());
             md = MessageDigest.getInstance("SHA-256");
+            md.update(fileContent);
         } catch (IOException e) {
             System.err.println("Erro ao ler o arquivo: " + e.getMessage());
+            return null;
         } catch (NoSuchAlgorithmException e) {
             System.err.println("Algoritmo no cálculo do Hash não encontrado");
             e.printStackTrace();
             System.exit(1);
         }
 
-        return md.digest(fileContent);
+        return md.digest();
     }
 }
