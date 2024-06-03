@@ -6,6 +6,7 @@
 package model;
 
 import java.security.KeyFactory;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.security.PrivateKey;
@@ -52,7 +53,7 @@ import java.math.BigInteger;
 public class RestoreValidateSuite {
 
     public static boolean Validate(File digitalEnvelope, File digitalSignature, File arquivoENCriptografado,
-            File certificadoUsuario, PrivateKey chaveUsuario) {
+            File certificadoUsuario, PrivateKey chaveUsuario, byte[] hashOriginal) {
         boolean result = false;
         int tamNameENV = digitalEnvelope.getName().length();
         int tamNameASD = digitalSignature.getName().length();
@@ -87,14 +88,13 @@ public class RestoreValidateSuite {
             return false;
         }
 
+        // Descriptografar o envelope digital para obter a semente
         byte[] semente = null;
-        {
-            byte[] EnvelopeArray = byteFromFile(digitalEnvelope);
-            semente = Decriptar("RSA/ECB/PKCS1Padding", EnvelopeArray, chaveUsuario);
+        byte[] EnvelopeArray = byteFromFile(digitalEnvelope);
+        semente = Decriptar("RSA/ECB/PKCS1Padding", EnvelopeArray, chaveUsuario);
+        Arrays.fill(EnvelopeArray, (byte) 0);
 
-            Arrays.fill(EnvelopeArray, (byte) 0);
-        }
-
+        // Descriptografar o arquivo criptografado
         byte[] arquivoDecriptografado = null;
         try {
             byte[] ENCriptedArray = byteFromFile(arquivoENCriptografado);
@@ -121,19 +121,19 @@ public class RestoreValidateSuite {
              * }
              */
         } catch (BadPaddingException e) {
-            System.err.println("Erro no uso do padding na decriptografia do envelope");
+            System.err.println("Erro no uso do padding na decriptação do envelope");
             e.printStackTrace();
             System.exit(1);
         } catch (NoSuchAlgorithmException e) {
-            System.err.println("Algorithmo na decriptografia do envelope não encontrado");
+            System.err.println("Algoritmo na decriptação do envelope não encontrado");
             e.printStackTrace();
             System.exit(1);
         } catch (NoSuchPaddingException e) {
-            System.err.println("Padding na decriptografia do envelope não encontrado");
+            System.err.println("Padding na decriptação do envelope não encontrado");
             e.printStackTrace();
             System.exit(1);
         } catch (InvalidKeyException e) {
-            System.err.println("Chave Invalida na decriptografia do envelope");
+            System.err.println("Chave Invalida na decriptação do envelope");
             e.printStackTrace();
             System.exit(1);
         } catch (IllegalBlockSizeException e) {
@@ -149,6 +149,7 @@ public class RestoreValidateSuite {
            * System.exit(1); TO DO?
            */
 
+        // Validar a assinatura digital
         try {
             byte[] CertificateArray = byteFromFile(certificadoUsuario);
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
@@ -156,14 +157,73 @@ public class RestoreValidateSuite {
                     .generateCertificate(new ByteArrayInputStream(CertificateArray));
 
             Signature assinaturaVerificacao = Signature.getInstance("SHA1withRSA");
-            assinaturaVerificacao.initSign(chaveUsuario);
-            assinaturaVerificacao.update(arquivoDecriptografado);
-            byte[] assinaturaTeste = assinaturaVerificacao.sign();
-
             assinaturaVerificacao.initVerify(certificado.getPublicKey());
             assinaturaVerificacao.update(arquivoDecriptografado);
-            result = assinaturaVerificacao.verify(assinaturaTeste);
 
+            // assinaturaVerificacao.initSign(chaveUsuario);
+            // byte[] assinaturaTeste = assinaturaVerificacao.sign();
+
+            byte[] assinaturaTeste = byteFromFile(digitalSignature);
+
+            if (!assinaturaVerificacao.verify(assinaturaTeste)) {
+                System.err.println("Falha na verificação da assinatura digital. Integridade comprometida.");
+                // return false; comentadado para dar segmento à comparação e impressão de hashs
+            } else
+                result = true;
+
+            // assinaturaVerificacao.update(arquivoDecriptografado);
+
+            // Verificar o hash dos dados decriptados
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                byte[] hashCalculado = md.digest(arquivoDecriptografado);
+
+                if (!Arrays.equals(hashCalculado, hashOriginal)) {
+                    System.err.println(
+                            "Erro de integridade: hash dos dados decriptados não corresponde ao hash original.");
+
+                    PrintHash(hashOriginal, "Original");
+                    PrintHash(hashCalculado, "Calculado");
+                    /*
+                     * StringBuilder hexOriginalString = new StringBuilder();
+                     * StringBuilder hexCalculadoString = new StringBuilder();
+                     * 
+                     * for (byte b : hashOriginal) {
+                     * // Converter cada byte para dois caracteres hexadecimais
+                     * String hex = Integer.toHexString(0xff & b);
+                     * if (hex.length() == 1) {
+                     * hexOriginalString.append('0'); // Garantir que cada byte seja representado
+                     * por dois
+                     * // caracteres
+                     * }
+                     * hexOriginalString.append(hex);
+                     * }
+                     * 
+                     * for (byte b : hashCalculado) {
+                     * // Converter cada byte para dois caracteres hexadecimais
+                     * String hex = Integer.toHexString(0xff & b);
+                     * if (hex.length() == 1) {
+                     * hexOriginalString.append('0'); // Garantir que cada byte seja representado
+                     * por dois
+                     * // caracteres
+                     * }
+                     * hexCalculadoString.append(hex);
+                     * }
+                     * 
+                     * System.out.println("Hash Original: " + hexOriginalString.toString());
+                     * System.out.println("Hash Calculado: " + hexCalculadoString.toString());
+                     */
+                    return false;
+                } else
+                    result = true;
+
+            } catch (NoSuchAlgorithmException e) {
+                System.err.println("Algoritmo de hash não encontrado: " + e.getMessage());
+                e.printStackTrace();
+                return false;
+            }
+
+            // Limpar dados sensíveis
             Arrays.fill(CertificateArray, (byte) 0);
             Arrays.fill(assinaturaTeste, (byte) 0);
 
@@ -172,7 +232,7 @@ public class RestoreValidateSuite {
             e.printStackTrace();
             System.exit(1);
         } catch (NoSuchAlgorithmException e) {
-            System.err.println("Algorithmo de criptografia não encontrado");
+            System.err.println("Algoritmo de criptografia não encontrado");
             e.printStackTrace();
             System.exit(1);
         } catch (InvalidKeyException e) {
@@ -185,10 +245,8 @@ public class RestoreValidateSuite {
             System.exit(1);
         }
 
-        {
-            Arrays.fill(arquivoDecriptografado, (byte) 0);
-            Arrays.fill(semente, (byte) 0);
-        }
+        Arrays.fill(arquivoDecriptografado, (byte) 0);
+        Arrays.fill(semente, (byte) 0);
 
         return result;
     }
@@ -290,7 +348,7 @@ public class RestoreValidateSuite {
             String algoritmoOID = certificado.getSigAlgOID();
             // certificado.verify(chaveCA);
 
-            System.out.println("CAcertificate:\n" + CAcertificate);
+            System.out.println("\nCAcertificate:\n" + CAcertificate);
             System.out.println("serial: " + serial);
             System.out.println("algoritmoAss: " + algoritmoAss);
             System.out.println("algoritmoOID: " + algoritmoOID);
@@ -329,19 +387,19 @@ public class RestoreValidateSuite {
             cipher.init(Cipher.DECRYPT_MODE, chave);
             result = cipher.doFinal(dataArray);
         } catch (BadPaddingException e) {
-            System.err.println("Erro no uso do padding na decriptografia do envelope");
+            System.err.println("Erro no uso do padding na decriptação do envelope");
             e.printStackTrace();
             System.exit(1);
         } catch (NoSuchAlgorithmException e) {
-            System.err.println("Algorithmo na decriptografia do envelope não encontrado");
+            System.err.println("Algoritmo na decriptação do envelope não encontrado");
             e.printStackTrace();
             System.exit(1);
         } catch (NoSuchPaddingException e) {
-            System.err.println("Padding na decriptografia do envelope não encontrado");
+            System.err.println("Padding na decriptação do envelope não encontrado");
             e.printStackTrace();
             System.exit(1);
         } catch (InvalidKeyException e) {
-            System.err.println("Chave Invalida na decriptografia do envelope");
+            System.err.println("Chave Invalida na decriptação do envelope");
             e.printStackTrace();
             System.exit(1);
         } catch (IllegalBlockSizeException e) {
@@ -353,9 +411,9 @@ public class RestoreValidateSuite {
     }
 
     public static void DecryptFile(File digitalEnvelope, File digitalSignature, File arquivoENCriptografado,
-            File certificadoUsuario, PrivateKey chaveUsuario, String Endereco_file) {
+            File certificadoUsuario, PrivateKey chaveUsuario, String Endereco_file, byte[] hashOriginal) {
         boolean validacao = Validate(digitalEnvelope, digitalSignature, arquivoENCriptografado, certificadoUsuario,
-                chaveUsuario);
+                chaveUsuario, hashOriginal);
         if (!validacao) {
             return;
         }
@@ -388,19 +446,19 @@ public class RestoreValidateSuite {
              * }
              */
         } catch (BadPaddingException e) {
-            System.err.println("Erro no uso do padding na decriptografia do envelope");
+            System.err.println("Erro no uso do padding na decriptação do envelope");
             e.printStackTrace();
             System.exit(1);
         } catch (NoSuchAlgorithmException e) {
-            System.err.println("Algorithmo na decriptografia do envelope não encontrado");
+            System.err.println("Algoritmo na decriptação do envelope não encontrado");
             e.printStackTrace();
             System.exit(1);
         } catch (NoSuchPaddingException e) {
-            System.err.println("Padding na decriptografia do envelope não encontrado");
+            System.err.println("Padding na decriptação do envelope não encontrado");
             e.printStackTrace();
             System.exit(1);
         } catch (InvalidKeyException e) {
-            System.err.println("Chave Invalida na decriptografia do envelope");
+            System.err.println("Chave Invalida na decriptação do envelope");
             e.printStackTrace();
             System.exit(1);
         } catch (IllegalBlockSizeException e) {
@@ -436,6 +494,19 @@ public class RestoreValidateSuite {
             e.printStackTrace();
             System.exit(1);
         }
-
     }
+
+    public static void PrintHash(byte[] hash, String tipo) {
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            // Converter cada byte para dois caracteres hexadecimais
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) {
+                hexString.append('0'); // Garantir que cada byte seja representado por dois caracteres
+            }
+            hexString.append(hex);
+        }
+        System.out.println("Hash " + tipo + ": " + hexString.toString());
+    }
+
 }

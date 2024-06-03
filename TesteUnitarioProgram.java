@@ -19,7 +19,13 @@ import java.security.PrivateKey;
 
 import java.lang.StringBuffer;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class TesteUnitarioProgram {
+
     public static void main(String[] args) {
 
         // TOTP cobaia_auth = null;
@@ -74,11 +80,12 @@ public class TesteUnitarioProgram {
 
         PrivateKey chaveUsuario = RestoreValidateSuite.RestorePrivateKey(keyFile, fraseSecreta);
         PublicKey chavePublica = RestoreValidateSuite.RestorePublicKey(certificado);
+        byte[] hashOriginal = calculateHash(assinatura);
 
         System.out.println("\nChave Privada: " + chaveUsuario.toString());
-        System.out.println("\nChave Pública: " + chavePublica.toString());
+        System.out.println("\nChave Pública: " + chavePublica.toString() + "\n");
         RestoreValidateSuite.DecryptFile(envelope, assinatura, encriptado,
-                certificado, chaveUsuario, nomeArquivo);
+                certificado, chaveUsuario, nomeArquivo, hashOriginal);
     }
 
     public static String HexCodeString(byte[] hexCode) {
@@ -129,4 +136,21 @@ public class TesteUnitarioProgram {
         }
     }
 
+    public static byte[] calculateHash(File arquivo) {
+        byte[] fileContent = null;
+        MessageDigest md = null;
+
+        try {
+            fileContent = Files.readAllBytes(arquivo.toPath());
+            md = MessageDigest.getInstance("SHA-256");
+        } catch (IOException e) {
+            System.err.println("Erro ao ler o arquivo: " + e.getMessage());
+        } catch (NoSuchAlgorithmException e) {
+            System.err.println("Algoritmo no cálculo do Hash não encontrado");
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return md.digest(fileContent);
+    }
 }
